@@ -32,11 +32,6 @@ export default function Calendar() {
     fetchMemories();
   }, []);
 
-  useEffect(() => {
-    console.log('Saving memories:', memories);
-    localStorage.setItem('memories', JSON.stringify(memories));
-  }, [memories]);
-
   const monthStart = startOfMonth(currentDate);
   const monthEnd = endOfMonth(currentDate);
   const calendarStart = startOfWeek(monthStart);

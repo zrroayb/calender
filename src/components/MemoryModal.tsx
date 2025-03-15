@@ -286,15 +286,13 @@ export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryA
                         sizes="(max-width: 768px) 100vw, 600px"
                         className="object-contain"
                         priority
+                        unoptimized
                         onError={(e) => {
                           console.error('Image failed to load:', {
                             url: memory.imageUrl,
                             error: e
                           });
                           e.currentTarget.src = '/placeholder.jpg';
-                        }}
-                        onLoad={() => {
-                          console.log('Image loaded successfully:', memory.imageUrl);
                         }}
                       />
                     </motion.div>
