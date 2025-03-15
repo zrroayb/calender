@@ -10,27 +10,36 @@ interface Heart {
   delay: number;
   scale: number;
   opacity: number;
+  color: string;
 }
 
 export default function FallingHearts() {
   const [hearts, setHearts] = useState<Heart[]>([]);
 
   useEffect(() => {
+    const colors = [
+      'text-pink-400',
+      'text-rose-400',
+      'text-purple-400',
+      'text-fuchsia-400'
+    ];
+
     const createHeart = () => ({
       id: Math.random(),
-      x: Math.random() * 100, // random position across screen width
-      delay: Math.random() * 2, // random start delay
-      scale: 0.5 + Math.random() * 0.5, // random size
-      opacity: 0.3 + Math.random() * 0.4, // random opacity
+      x: Math.random() * 100,
+      delay: Math.random() * 2,
+      scale: 0.8 + Math.random() * 0.7, // Bigger hearts
+      opacity: 0.5 + Math.random() * 0.3, // More visible opacity
+      color: colors[Math.floor(Math.random() * colors.length)],
     });
 
     // Create initial hearts
-    setHearts(Array.from({ length: 15 }, createHeart));
+    setHearts(Array.from({ length: 20 }, createHeart)); // More hearts
 
-    // Add new hearts periodically
+    // Add new hearts more frequently
     const interval = setInterval(() => {
-      setHearts(prev => [...prev.slice(-14), createHeart()]);
-    }, 3000);
+      setHearts(prev => [...prev.slice(-19), createHeart()]);
+    }, 2000); // Faster interval
 
     return () => clearInterval(interval);
   }, []);
@@ -43,22 +52,24 @@ export default function FallingHearts() {
           initial={{ 
             y: -20,
             x: `${heart.x}vw`,
-            opacity: 0 
+            opacity: 0,
+            rotate: -30 + Math.random() * 60, // Random rotation
           }}
           animate={{ 
             y: '110vh',
             opacity: heart.opacity,
+            rotate: 30 + Math.random() * 60, // Rotate while falling
           }}
           transition={{ 
-            duration: 10,
+            duration: 15, // Slower fall
             delay: heart.delay,
             repeat: Infinity,
-            ease: 'linear'
+            ease: [0.4, 0, 0.2, 1], // Custom easing for more natural movement
           }}
           className="absolute top-0"
         >
           <Heart 
-            className="text-pink-400/30 dark:text-pink-500/20" 
+            className={`${heart.color} drop-shadow-lg filter blur-[0.2px]`} // Added shadow and slight blur
             style={{ 
               transform: `scale(${heart.scale})`,
             }}
