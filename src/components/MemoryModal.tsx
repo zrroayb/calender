@@ -3,7 +3,7 @@
 import React, { useState, useRef } from 'react';
 import { Memory } from '@/types/memory';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Upload, Camera } from 'lucide-react';
+import { X, Camera } from 'lucide-react';
 import Image from 'next/image';
 import { format } from 'date-fns';
 
