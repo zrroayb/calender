@@ -3,19 +3,20 @@ import { connectDB } from '@/lib/mongodb';
 import { Memory } from '@/models/Memory';
 import { NextRequest } from 'next/server';
 
-interface RouteParams {
+type Props = {
   params: {
     id: string;
   };
-}
+  searchParams: { [key: string]: string | string[] | undefined };
+};
 
 export async function DELETE(
-  request: NextRequest,
-  context: RouteParams
+  _request: NextRequest,
+  props: Props
 ) {
   try {
     await connectDB();
-    const memory = await Memory.findByIdAndDelete(context.params.id);
+    const memory = await Memory.findByIdAndDelete(props.params.id);
     if (!memory) {
       return NextResponse.json({ error: 'Memory not found' }, { status: 404 });
     }
@@ -31,13 +32,13 @@ export async function DELETE(
 
 export async function PATCH(
   request: NextRequest,
-  context: RouteParams
+  props: Props
 ) {
   try {
     await connectDB();
     const { comment } = await request.json();
     
-    const memory = await Memory.findById(context.params.id);
+    const memory = await Memory.findById(props.params.id);
     if (!memory) {
       return NextResponse.json({ error: 'Memory not found' }, { status: 404 });
     }
