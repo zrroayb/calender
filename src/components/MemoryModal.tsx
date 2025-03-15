@@ -92,6 +92,52 @@ export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryA
     }
   };
 
+  // Add a test connection function
+  const testCloudinaryConnection = async () => {
+    try {
+      const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+      const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
+
+      console.log('Testing Cloudinary connection with:', {
+        cloudName,
+        uploadPreset,
+      });
+
+      // Test the configuration by trying to fetch the upload API
+      const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/upload`, {
+        method: 'OPTIONS',
+      });
+
+      console.log('Cloudinary API Response:', {
+        status: response.status,
+        statusText: response.statusText,
+        headers: Object.fromEntries(response.headers.entries()),
+      });
+
+      // Also test with a tiny payload
+      const testFormData = new FormData();
+      testFormData.append('upload_preset', uploadPreset || 'my-upload2');
+      testFormData.append('file', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==');
+
+      const uploadResponse = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+        method: 'POST',
+        body: testFormData,
+      });
+
+      const data = await uploadResponse.json();
+      console.log('Cloudinary Test Upload Response:', data);
+
+      if (uploadResponse.ok) {
+        toast.success('Cloudinary connection successful!');
+      } else {
+        throw new Error(data.error?.message || 'Upload test failed');
+      }
+    } catch (error) {
+      console.error('Cloudinary connection test failed:', error);
+      toast.error(`Connection test failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -114,12 +160,23 @@ export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryA
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
               {mode === 'add' ? 'Add Memory' : format(date, 'MMMM d, yyyy')}
             </h2>
-            <button 
-              onClick={onClose}
-              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
-            >
-              <X className="w-6 h-6 text-gray-500 dark:text-gray-400" />
-            </button>
+            <div className="flex items-center gap-2">
+              {mode === 'add' && (
+                <button
+                  type="button"
+                  onClick={testCloudinaryConnection}
+                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors text-sm text-gray-500"
+                >
+                  Test Connection
+                </button>
+              )}
+              <button 
+                onClick={onClose}
+                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
+              >
+                <X className="w-6 h-6 text-gray-500 dark:text-gray-400" />
+              </button>
+            </div>
           </div>
 
           {mode === 'add' ? (
