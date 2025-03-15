@@ -44,15 +44,18 @@ export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryA
       const formData = new FormData();
       formData.append('file', selectedFile);
       formData.append('upload_preset', process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || 'my-upload2');
+      formData.append('folder', 'calendar-memories');
 
       const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
       if (!cloudName) {
         throw new Error('Cloudinary cloud name is not configured');
       }
 
-      console.log('Uploading to Cloudinary...', {
+      console.log('Starting upload with:', {
         cloudName,
         uploadPreset: process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET,
+        fileType: selectedFile.type,
+        fileSize: selectedFile.size
       });
 
       const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
@@ -62,12 +65,12 @@ export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryA
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.error('Cloudinary error response:', errorData);
+        console.error('Cloudinary error details:', errorData);
         throw new Error(errorData.error?.message || 'Failed to upload image');
       }
 
       const data = await response.json();
-      console.log('Cloudinary response:', data);
+      console.log('Upload response:', data);
 
       if (!data.secure_url) {
         throw new Error('No URL received from Cloudinary');
@@ -82,7 +85,7 @@ export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryA
         comments: [],
       };
 
-      console.log('New memory created:', newMemory);
+      console.log('Creating new memory:', newMemory);
       onMemoryAdded(newMemory);
       toast.success('Memory added successfully!');
       onClose();
@@ -92,8 +95,23 @@ export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryA
     }
   };
 
-  // Add a test connection function
-  const testCloudinaryConnection = async () => {
+  const testConnections = async () => {
+    // Test MongoDB
+    try {
+      const mongoResponse = await fetch('/api/test-connection');
+      const mongoData = await mongoResponse.json();
+      
+      if (mongoResponse.ok) {
+        toast.success('MongoDB connection successful!');
+      } else {
+        throw new Error(mongoData.error || 'MongoDB test failed');
+      }
+    } catch (error) {
+      console.error('MongoDB test failed:', error);
+      toast.error(`MongoDB test failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+
+    // Test Cloudinary
     try {
       const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
       const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
@@ -103,38 +121,26 @@ export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryA
         uploadPreset,
       });
 
-      // Test the configuration by trying to fetch the upload API
-      const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/upload`, {
-        method: 'OPTIONS',
-      });
-
-      console.log('Cloudinary API Response:', {
-        status: response.status,
-        statusText: response.statusText,
-        headers: Object.fromEntries(response.headers.entries()),
-      });
-
-      // Also test with a tiny payload
       const testFormData = new FormData();
       testFormData.append('upload_preset', uploadPreset || 'my-upload2');
       testFormData.append('file', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==');
 
-      const uploadResponse = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+      const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
         method: 'POST',
         body: testFormData,
       });
 
-      const data = await uploadResponse.json();
-      console.log('Cloudinary Test Upload Response:', data);
+      const data = await response.json();
+      console.log('Cloudinary Test Response:', data);
 
-      if (uploadResponse.ok) {
+      if (response.ok) {
         toast.success('Cloudinary connection successful!');
       } else {
-        throw new Error(data.error?.message || 'Upload test failed');
+        throw new Error(data.error?.message || 'Cloudinary test failed');
       }
     } catch (error) {
-      console.error('Cloudinary connection test failed:', error);
-      toast.error(`Connection test failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      console.error('Cloudinary test failed:', error);
+      toast.error(`Cloudinary test failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   };
 
@@ -164,10 +170,10 @@ export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryA
               {mode === 'add' && (
                 <button
                   type="button"
-                  onClick={testCloudinaryConnection}
+                  onClick={testConnections}
                   className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors text-sm text-gray-500"
                 >
-                  Test Connection
+                  Test Connections
                 </button>
               )}
               <button 
@@ -264,44 +270,53 @@ export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryA
             </form>
           ) : (
             <div className="space-y-6">
-              {memories.map((memory) => (
-                <div key={memory.id} className="space-y-4">
-                  <motion.div 
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-700"
-                  >
-                    <Image
-                      src={memory.imageUrl}
-                      alt={memory.caption}
-                      fill
-                      sizes="(max-width: 768px) 100vw, 600px"
-                      className="object-contain"
-                      priority
-                      onError={(e) => {
-                        console.error('Image failed to load:', memory.imageUrl);
-                        e.currentTarget.src = '/placeholder.jpg'; // Add a placeholder image
-                      }}
-                    />
-                  </motion.div>
-                  <div className="space-y-2">
-                    <p className="text-gray-700 dark:text-gray-300 text-lg">{memory.caption}</p>
-                    <div className="flex items-center gap-2">
-                      <span className={`px-3 py-1 rounded-full text-sm font-medium
-                        ${memory.author === 'Ayberk' 
-                          ? 'bg-purple-100 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400' 
-                          : 'bg-pink-100 text-pink-600 dark:bg-pink-900/20 dark:text-pink-400'
-                        }`}
-                      >
-                        Added by {memory.author}
-                      </span>
-                      <span className="text-sm text-gray-500 dark:text-gray-400">
-                        {format(new Date(memory.date), 'MMMM d, yyyy')}
-                      </span>
+              {memories.map((memory) => {
+                console.log('Rendering memory:', memory);
+                return (
+                  <div key={memory.id} className="space-y-4">
+                    <motion.div 
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-700"
+                    >
+                      <Image
+                        src={memory.imageUrl}
+                        alt={memory.caption || 'Memory image'}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 600px"
+                        className="object-contain"
+                        priority
+                        onError={(e) => {
+                          console.error('Image failed to load:', {
+                            url: memory.imageUrl,
+                            error: e
+                          });
+                          e.currentTarget.src = '/placeholder.jpg';
+                        }}
+                        onLoad={() => {
+                          console.log('Image loaded successfully:', memory.imageUrl);
+                        }}
+                      />
+                    </motion.div>
+                    <div className="space-y-2">
+                      <p className="text-gray-700 dark:text-gray-300 text-lg">{memory.caption}</p>
+                      <div className="flex items-center gap-2">
+                        <span className={`px-3 py-1 rounded-full text-sm font-medium
+                          ${memory.author === 'Ayberk' 
+                            ? 'bg-purple-100 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400' 
+                            : 'bg-pink-100 text-pink-600 dark:bg-pink-900/20 dark:text-pink-400'
+                          }`}
+                        >
+                          Added by {memory.author}
+                        </span>
+                        <span className="text-sm text-gray-500 dark:text-gray-400">
+                          {format(new Date(memory.date), 'MMMM d, yyyy')}
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </motion.div>
