@@ -2,16 +2,10 @@ import { NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongodb';
 import { Memory } from '@/models/Memory';
 
-type Props = {
-  params: {
-    id: string;
-  };
-};
-
 export async function DELETE(
-  request: Request,
-  { params }: Props
-) {
+  _req: Request,
+  { params }: { params: { id: string } }
+): Promise<NextResponse> {
   try {
     await connectDB();
     const memory = await Memory.findOneAndDelete({ id: params.id });
