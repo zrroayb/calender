@@ -1,6 +1,4 @@
-import { NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongodb';
-import { Memory } from '@/models/Memory';
 import { ObjectId } from 'mongodb';
 
 export const dynamic = 'force-dynamic';
@@ -27,7 +25,7 @@ export async function DELETE(
     return new Response(JSON.stringify({ message: "Memory deleted successfully" }), {
       status: 200,
     });
-  } catch (error) {
+  } catch (_error) {
     return new Response(JSON.stringify({ error: "Failed to delete memory" }), {
       status: 500,
     });
