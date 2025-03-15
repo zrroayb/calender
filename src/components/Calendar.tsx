@@ -91,10 +91,6 @@ export default function Calendar() {
     }
   };
 
-  const handleMemoryDeleted = async (memoryId: string) => {
-    setMemories(prev => prev.filter(m => m.id !== memoryId));
-  };
-
   return (
     <div className="min-h-screen bg-[#fafafa] dark:bg-gray-900 p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
@@ -255,7 +251,6 @@ export default function Calendar() {
             memory => memory.date === format(selectedDate, 'yyyy-MM-dd')
           )}
           onMemoryAdded={handleMemoryAdded}
-          onMemoryDeleted={handleMemoryDeleted}
           mode={modalMode}
         />
       )}
