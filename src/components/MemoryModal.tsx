@@ -43,15 +43,22 @@ export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryA
     try {
       const formData = new FormData();
       formData.append('file', selectedFile);
-      formData.append('upload_preset', 'my-uploads');
+      formData.append('upload_preset', process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || 'my-uploads');
 
-      const response = await fetch(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`, {
+      const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+      if (!cloudName) {
+        throw new Error('Cloudinary cloud name is not configured');
+      }
+
+      const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
         method: 'POST',
         body: formData,
       });
 
       if (!response.ok) {
-        throw new Error('Failed to upload image');
+        const errorData = await response.json();
+        console.error('Cloudinary error:', errorData);
+        throw new Error(errorData.error?.message || 'Failed to upload image');
       }
 
       const data = await response.json();
@@ -74,7 +81,7 @@ export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryA
       onClose();
     } catch (error) {
       console.error('Error uploading image:', error);
-      toast.error('Failed to upload image. Please try again.');
+      toast.error(error instanceof Error ? error.message : 'Failed to upload image. Please try again.');
     }
   };
 
