@@ -15,13 +15,13 @@ interface MemoryModalProps {
   memories: Memory[];
   onMemoryAdded: (memory: Memory) => void;
   mode: 'view' | 'add';
+  currentUser: 'Ayberk' | 'Selvi';
 }
 
-export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryAdded, mode }: MemoryModalProps) {
+export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryAdded, mode, currentUser }: MemoryModalProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string>('');
   const [caption, setCaption] = useState('');
-  const [author, setAuthor] = useState<'Ayberk' | 'Selvi'>('Ayberk');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,7 +81,7 @@ export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryA
         date: format(date, 'yyyy-MM-dd'),
         imageUrl: data.secure_url,
         caption,
-        author,
+        author: currentUser,
         comments: [],
       };
 
@@ -222,36 +222,6 @@ export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryA
                   rows={3}
                   placeholder="Write something about this memory..."
                 />
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Author
-                  </label>
-                  <div className="flex gap-4">
-                    <button
-                      type="button"
-                      onClick={() => setAuthor('Ayberk')}
-                      className={`flex-1 px-4 py-3 rounded-xl border ${
-                        author === 'Ayberk'
-                          ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400'
-                          : 'border-gray-200 dark:border-gray-600'
-                      }`}
-                    >
-                      Ayberk
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setAuthor('Selvi')}
-                      className={`flex-1 px-4 py-3 rounded-xl border ${
-                        author === 'Selvi'
-                          ? 'border-pink-500 bg-pink-50 dark:bg-pink-900/20 text-pink-600 dark:text-pink-400'
-                          : 'border-gray-200 dark:border-gray-600'
-                      }`}
-                    >
-                      Selvi
-                    </button>
-                  </div>
-                </div>
               </div>
 
               <button
