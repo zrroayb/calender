@@ -1,20 +1,14 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongodb';
 import { Memory } from '@/models/Memory';
 
-interface RouteParams {
-  params: {
-    id: string;
-  };
-}
-
 export async function DELETE(
-  _request: Request,
-  { params }: RouteParams
+  request: NextRequest,
+  context: { params: { id: string } }
 ) {
   try {
     await connectDB();
-    const memory = await Memory.findOneAndDelete({ id: params.id });
+    const memory = await Memory.findOneAndDelete({ id: context.params.id });
     
     if (!memory) {
       return NextResponse.json({ error: 'Memory not found' }, { status: 404 });
