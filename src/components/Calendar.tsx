@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isToday, addMonths, subMonths, startOfWeek, endOfWeek } from 'date-fns';
 import { motion } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Plus, Camera, Heart, Calendar as CalendarIcon } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus, Calendar as CalendarIcon } from 'lucide-react';
 import type { Memory } from '@/types/memory';
 import { toast, Toaster } from 'react-hot-toast';
 import { DAYS_OF_WEEK } from '@/constants';
