@@ -5,7 +5,7 @@ import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isTod
 import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Plus, Camera, Heart, Calendar as CalendarIcon } from 'lucide-react';
 import type { Memory } from '@/types/memory';
-import { Toaster } from 'react-hot-toast';
+import { toast, Toaster } from 'react-hot-toast';
 import { DAYS_OF_WEEK } from '@/constants';
 import MemoryModal from './MemoryModal';
 
