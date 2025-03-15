@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Camera } from 'lucide-react';
 import Image from 'next/image';
 import { format } from 'date-fns';
+import { toast } from 'react-hot-toast';
 
 interface MemoryModalProps {
   isOpen: boolean;
@@ -42,14 +43,22 @@ export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryA
     try {
       const formData = new FormData();
       formData.append('file', selectedFile);
-      formData.append('upload_preset', 'my-uploads'); // You'll need to configure this in Cloudinary
+      formData.append('upload_preset', 'my-uploads');
 
       const response = await fetch(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`, {
         method: 'POST',
         body: formData,
       });
 
+      if (!response.ok) {
+        throw new Error('Failed to upload image');
+      }
+
       const data = await response.json();
+
+      if (!data.secure_url) {
+        throw new Error('No URL received from Cloudinary');
+      }
 
       const newMemory: Memory = {
         id: Date.now().toString(),
@@ -61,9 +70,11 @@ export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryA
       };
 
       onMemoryAdded(newMemory);
+      toast.success('Memory added successfully!');
       onClose();
     } catch (error) {
       console.error('Error uploading image:', error);
+      toast.error('Failed to upload image. Please try again.');
     }
   };
 

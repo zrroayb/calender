@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isToday, addMonths, subMonths, startOfWeek, endOfWeek } from 'date-fns';
 import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Plus, Camera, Heart, Calendar as CalendarIcon } from 'lucide-react';
@@ -15,6 +15,17 @@ export default function Calendar() {
   const [memories, setMemories] = useState<Memory[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<'view' | 'add'>('add');
+
+  useEffect(() => {
+    const savedMemories = localStorage.getItem('memories');
+    if (savedMemories) {
+      setMemories(JSON.parse(savedMemories));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('memories', JSON.stringify(memories));
+  }, [memories]);
 
   const monthStart = startOfMonth(currentDate);
   const monthEnd = endOfMonth(currentDate);
