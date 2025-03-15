@@ -11,6 +11,7 @@ interface Heart {
   scale: number;
   opacity: number;
   color: string;
+  bounce: number;
 }
 
 export default function FallingHearts() {
@@ -28,18 +29,17 @@ export default function FallingHearts() {
       id: Math.random(),
       x: Math.random() * 100,
       delay: Math.random() * 2,
-      scale: 0.8 + Math.random() * 0.7, // Bigger hearts
-      opacity: 0.5 + Math.random() * 0.3, // More visible opacity
+      scale: 0.8 + Math.random() * 0.7,
+      opacity: 0.5 + Math.random() * 0.3,
       color: colors[Math.floor(Math.random() * colors.length)],
+      bounce: 1 + Math.random() * 2, // Random bounce height
     });
 
-    // Create initial hearts
-    setHearts(Array.from({ length: 20 }, createHeart)); // More hearts
+    setHearts(Array.from({ length: 20 }, createHeart));
 
-    // Add new hearts more frequently
     const interval = setInterval(() => {
       setHearts(prev => [...prev.slice(-19), createHeart()]);
-    }, 2000); // Faster interval
+    }, 2000);
 
     return () => clearInterval(interval);
   }, []);
@@ -53,23 +53,64 @@ export default function FallingHearts() {
             y: -20,
             x: `${heart.x}vw`,
             opacity: 0,
-            rotate: -30 + Math.random() * 60, // Random rotation
+            rotate: -30 + Math.random() * 60,
           }}
           animate={{ 
-            y: '110vh',
-            opacity: heart.opacity,
-            rotate: 30 + Math.random() * 60, // Rotate while falling
+            y: [
+              '-5vh', // Start position
+              '30vh', // First bounce point
+              `${15 + heart.bounce * 5}vh`, // Bounce up
+              '60vh', // Second bounce point
+              `${45 + heart.bounce * 3}vh`, // Smaller bounce up
+              '110vh', // Final position
+            ],
+            x: [
+              `${heart.x}vw`,
+              `${heart.x + (Math.random() - 0.5) * 10}vw`, // Slight horizontal movement
+              `${heart.x + (Math.random() - 0.5) * 15}vw`,
+              `${heart.x + (Math.random() - 0.5) * 20}vw`,
+              `${heart.x + (Math.random() - 0.5) * 25}vw`,
+              `${heart.x + (Math.random() - 0.5) * 30}vw`,
+            ],
+            opacity: [0, heart.opacity, heart.opacity, heart.opacity * 0.8, heart.opacity * 0.6, 0],
+            rotate: [
+              -30 + Math.random() * 60,
+              30 + Math.random() * 60,
+              -45 + Math.random() * 90,
+              45 + Math.random() * 90,
+              -60 + Math.random() * 120,
+              60 + Math.random() * 120,
+            ],
+            scale: [
+              heart.scale,
+              heart.scale * 1.1,
+              heart.scale * 0.9,
+              heart.scale * 1.05,
+              heart.scale * 0.85,
+              heart.scale * 0.7,
+            ]
           }}
           transition={{ 
-            duration: 15, // Slower fall
+            duration: 15,
             delay: heart.delay,
             repeat: Infinity,
-            ease: [0.4, 0, 0.2, 1], // Custom easing for more natural movement
+            ease: [0.76, 0, 0.24, 1], // More natural bouncy easing
+            y: {
+              times: [0, 0.3, 0.4, 0.6, 0.7, 1],
+              ease: "easeInOut"
+            },
+            opacity: {
+              times: [0, 0.1, 0.4, 0.6, 0.8, 1]
+            },
+            rotate: {
+              times: [0, 0.2, 0.4, 0.6, 0.8, 1],
+              ease: "easeInOut"
+            }
           }}
           className="absolute top-0"
         >
           <Heart 
-            className={`${heart.color} drop-shadow-lg filter blur-[0.2px]`} // Added shadow and slight blur
+            className={`${heart.color} drop-shadow-lg filter blur-[0.2px] transition-transform`}
             style={{ 
               transform: `scale(${heart.scale})`,
             }}
