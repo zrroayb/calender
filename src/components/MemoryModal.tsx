@@ -3,7 +3,7 @@
 import React, { useState, useRef } from 'react';
 import { Memory } from '@/types/memory';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Camera } from 'lucide-react';
+import { X, Camera, Trash2, MessageCircle } from 'lucide-react';
 import Image from 'next/image';
 import { format } from 'date-fns';
 import { toast } from 'react-hot-toast';
@@ -14,14 +14,18 @@ interface MemoryModalProps {
   date: Date;
   memories: Memory[];
   onMemoryAdded: (memory: Memory) => void;
+  onMemoryDeleted: (memoryId: string) => void;
   mode: 'view' | 'add';
 }
 
-export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryAdded, mode }: MemoryModalProps) {
+export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryAdded, onMemoryDeleted, mode }: MemoryModalProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string>('');
   const [caption, setCaption] = useState('');
   const [author, setAuthor] = useState<'Ayberk' | 'Selvi'>('Ayberk');
+  const [commentText, setCommentText] = useState('');
+  const [commentAuthor, setCommentAuthor] = useState<'Ayberk' | 'Selvi'>('Ayberk');
+  const [showCommentForm, setShowCommentForm] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -141,6 +145,57 @@ export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryA
     } catch (error) {
       console.error('Cloudinary test failed:', error);
       toast.error(`Cloudinary test failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  };
+
+  const handleDelete = async (memoryId: string) => {
+    if (!confirm('Are you sure you want to delete this memory?')) return;
+
+    try {
+      const response = await fetch(`/api/memories/${memoryId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) throw new Error('Failed to delete memory');
+      
+      onMemoryDeleted(memoryId);
+      toast.success('Memory deleted successfully');
+    } catch (error) {
+      console.error('Error deleting memory:', error);
+      toast.error('Failed to delete memory');
+    }
+  };
+
+  const handleAddComment = async (memoryId: string) => {
+    if (!commentText.trim()) return;
+
+    try {
+      const comment = {
+        id: Date.now().toString(),
+        text: commentText,
+        author: commentAuthor,
+        createdAt: new Date().toISOString(),
+      };
+
+      const response = await fetch(`/api/memories/${memoryId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ comment }),
+      });
+
+      if (!response.ok) throw new Error('Failed to add comment');
+
+      const updatedMemory = await response.json();
+      // Update the memories state with the new comment
+      onMemoryAdded(updatedMemory);
+      setCommentText('');
+      setShowCommentForm(null);
+      toast.success('Comment added successfully');
+    } catch (error) {
+      console.error('Error adding comment:', error);
+      toast.error('Failed to add comment');
     }
   };
 
@@ -274,42 +329,121 @@ export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryA
                 console.log('Rendering memory:', memory);
                 return (
                   <div key={memory.id} className="space-y-4">
-                    <motion.div 
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-700"
-                    >
-                      <Image
-                        src={memory.imageUrl}
-                        alt={memory.caption || 'Memory image'}
-                        fill
-                        sizes="(max-width: 768px) 100vw, 600px"
-                        className="object-contain"
-                        priority
-                        unoptimized
-                        onError={(e) => {
-                          console.error('Image failed to load:', {
-                            url: memory.imageUrl,
-                            error: e
-                          });
-                          e.currentTarget.src = '/placeholder.jpg';
-                        }}
-                      />
-                    </motion.div>
-                    <div className="space-y-2">
+                    <div className="flex justify-between items-start">
+                      <motion.div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-700 w-full">
+                        <Image
+                          src={memory.imageUrl}
+                          alt={memory.caption || 'Memory image'}
+                          fill
+                          sizes="(max-width: 768px) 100vw, 600px"
+                          className="object-contain"
+                          priority
+                          unoptimized
+                          onError={(e) => {
+                            console.error('Image failed to load:', {
+                              url: memory.imageUrl,
+                              error: e
+                            });
+                            e.currentTarget.src = '/placeholder.jpg';
+                          }}
+                        />
+                      </motion.div>
+                      <button
+                        onClick={() => handleDelete(memory.id)}
+                        className="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-full text-red-500"
+                      >
+                        <Trash2 className="w-5 h-5" />
+                      </button>
+                    </div>
+
+                    <div className="space-y-4">
                       <p className="text-gray-700 dark:text-gray-300 text-lg">{memory.caption}</p>
-                      <div className="flex items-center gap-2">
-                        <span className={`px-3 py-1 rounded-full text-sm font-medium
-                          ${memory.author === 'Ayberk' 
-                            ? 'bg-purple-100 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400' 
-                            : 'bg-pink-100 text-pink-600 dark:bg-pink-900/20 dark:text-pink-400'
-                          }`}
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className={`px-3 py-1 rounded-full text-sm font-medium
+                            ${memory.author === 'Ayberk' 
+                              ? 'bg-purple-100 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400' 
+                              : 'bg-pink-100 text-pink-600 dark:bg-pink-900/20 dark:text-pink-400'
+                            }`}
+                          >
+                            Added by {memory.author}
+                          </span>
+                          <span className="text-sm text-gray-500 dark:text-gray-400">
+                            {format(new Date(memory.date), 'MMMM d, yyyy')}
+                          </span>
+                        </div>
+                        <button
+                          onClick={() => setShowCommentForm(memory.id)}
+                          className="flex items-center gap-1 text-sm text-gray-500 hover:text-purple-500"
                         >
-                          Added by {memory.author}
-                        </span>
-                        <span className="text-sm text-gray-500 dark:text-gray-400">
-                          {format(new Date(memory.date), 'MMMM d, yyyy')}
-                        </span>
+                          <MessageCircle className="w-4 h-4" />
+                          {memory.comments.length} Comments
+                        </button>
+                      </div>
+
+                      <div className="space-y-3">
+                        {memory.comments.map((comment) => (
+                          <div key={comment.id} className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-3">
+                            <p className="text-gray-700 dark:text-gray-300">{comment.text}</p>
+                            <div className="flex items-center gap-2 mt-2">
+                              <span className={`text-sm font-medium ${
+                                comment.author === 'Ayberk' 
+                                  ? 'text-purple-600 dark:text-purple-400'
+                                  : 'text-pink-600 dark:text-pink-400'
+                              }`}>
+                                {comment.author}
+                              </span>
+                              <span className="text-xs text-gray-500">
+                                {format(new Date(comment.createdAt), 'MMM d, yyyy HH:mm')}
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+
+                        {showCommentForm === memory.id && (
+                          <div className="space-y-3">
+                            <textarea
+                              value={commentText}
+                              onChange={(e) => setCommentText(e.target.value)}
+                              className="w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700"
+                              placeholder="Write a comment..."
+                              rows={2}
+                            />
+                            <div className="flex items-center justify-between">
+                              <div className="flex gap-2">
+                                <button
+                                  type="button"
+                                  onClick={() => setCommentAuthor('Ayberk')}
+                                  className={`px-3 py-1 rounded-full text-sm ${
+                                    commentAuthor === 'Ayberk'
+                                      ? 'bg-purple-100 text-purple-600 dark:bg-purple-900/20'
+                                      : 'bg-gray-100 text-gray-600 dark:bg-gray-700'
+                                  }`}
+                                >
+                                  Ayberk
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => setCommentAuthor('Selvi')}
+                                  className={`px-3 py-1 rounded-full text-sm ${
+                                    commentAuthor === 'Selvi'
+                                      ? 'bg-pink-100 text-pink-600 dark:bg-pink-900/20'
+                                      : 'bg-gray-100 text-gray-600 dark:bg-gray-700'
+                                  }`}
+                                >
+                                  Selvi
+                                </button>
+                              </div>
+                              <button
+                                onClick={() => handleAddComment(memory.id)}
+                                disabled={!commentText.trim()}
+                                className="px-4 py-2 bg-purple-500 text-white rounded-xl disabled:opacity-50"
+                              >
+                                Add Comment
+                              </button>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
