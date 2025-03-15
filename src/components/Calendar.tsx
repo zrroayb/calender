@@ -7,11 +7,14 @@ import { ChevronLeft, ChevronRight, Plus, Camera, Heart, Calendar as CalendarIco
 import type { Memory } from '@/types/memory';
 import { Toaster } from 'react-hot-toast';
 import { DAYS_OF_WEEK } from '@/constants';
+import MemoryModal from './MemoryModal';
 
 export default function Calendar() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [memories] = useState<Memory[]>([]);
+  const [memories, setMemories] = useState<Memory[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMode, setModalMode] = useState<'view' | 'add'>('add');
 
   const monthStart = startOfMonth(currentDate);
   const monthEnd = endOfMonth(currentDate);
@@ -44,6 +47,16 @@ export default function Calendar() {
 
   const handleDayClick = (date: Date) => {
     setSelectedDate(date);
+    const dayMemories = memories.filter(
+      memory => memory.date === format(date, 'yyyy-MM-dd')
+    );
+    setModalMode(dayMemories.length > 0 ? 'view' : 'add');
+    setIsModalOpen(true);
+  };
+
+  const handleMemoryAdded = (newMemory: Memory) => {
+    setMemories(prev => [...prev, newMemory]);
+    toast.success('Memory added successfully!');
   };
 
   return (
@@ -196,6 +209,19 @@ export default function Calendar() {
           },
         }}
       />
+
+      {selectedDate && (
+        <MemoryModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          date={selectedDate}
+          memories={memories.filter(
+            memory => memory.date === format(selectedDate, 'yyyy-MM-dd')
+          )}
+          onMemoryAdded={handleMemoryAdded}
+          mode={modalMode}
+        />
+      )}
     </div>
   );
 } 

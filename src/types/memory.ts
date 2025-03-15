@@ -3,12 +3,13 @@ export interface Memory {
   date: string;
   imageUrl: string;
   caption: string;
+  author: 'Ayberk' | 'Selvi';
   comments: Comment[];
 }
 
-interface Comment {
+export interface Comment {
   id: string;
   text: string;
-  author: string;
+  author: 'Ayberk' | 'Selvi';
   createdAt: string;
 } 
