@@ -19,8 +19,8 @@ export default function Calendar() {
   const calendarEnd = endOfWeek(monthEnd);
   const daysInCalendar = eachDayOfInterval({ start: calendarStart, end: calendarEnd });
 
-  const weeks = [];
-  let week = [];
+  const weeks: Date[][] = [];
+  let week: Date[] = [];
 
   daysInCalendar.forEach((day) => {
     week.push(day);
@@ -29,6 +29,10 @@ export default function Calendar() {
       week = [];
     }
   });
+
+  if (week.length > 0) {
+    weeks.push(week);
+  }
 
   const previousMonth = () => {
     setCurrentDate(subMonths(currentDate, 1));
