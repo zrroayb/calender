@@ -93,7 +93,7 @@ export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryA
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50"
+        className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50"
         onClick={onClose}
       >
         <motion.div
@@ -101,7 +101,7 @@ export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryA
           animate={{ scale: 1 }}
           exit={{ scale: 0.95 }}
           onClick={(e) => e.stopPropagation()}
-          className="bg-white dark:bg-gray-800 rounded-3xl p-6 w-full max-w-lg"
+          className="bg-white dark:bg-gray-800 rounded-3xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto"
         >
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -202,17 +202,35 @@ export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryA
             <div className="space-y-6">
               {memories.map((memory) => (
                 <div key={memory.id} className="space-y-4">
-                  <div className="relative h-64 rounded-2xl overflow-hidden">
+                  <motion.div 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-700"
+                  >
                     <Image
                       src={memory.imageUrl}
                       alt={memory.caption}
                       fill
-                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, 600px"
+                      className="object-contain"
+                      priority
                     />
-                  </div>
-                  <p className="text-gray-700 dark:text-gray-300">{memory.caption}</p>
-                  <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-                    <span>Added by {memory.author}</span>
+                  </motion.div>
+                  <div className="space-y-2">
+                    <p className="text-gray-700 dark:text-gray-300 text-lg">{memory.caption}</p>
+                    <div className="flex items-center gap-2">
+                      <span className={`px-3 py-1 rounded-full text-sm font-medium
+                        ${memory.author === 'Ayberk' 
+                          ? 'bg-purple-100 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400' 
+                          : 'bg-pink-100 text-pink-600 dark:bg-pink-900/20 dark:text-pink-400'
+                        }`}
+                      >
+                        Added by {memory.author}
+                      </span>
+                      <span className="text-sm text-gray-500 dark:text-gray-400">
+                        {format(new Date(memory.date), 'MMMM d, yyyy')}
+                      </span>
+                    </div>
                   </div>
                 </div>
               ))}
