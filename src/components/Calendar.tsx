@@ -9,6 +9,7 @@ import { toast, Toaster } from 'react-hot-toast';
 import { DAYS_OF_WEEK } from '@/constants';
 import MemoryModal from './MemoryModal';
 import Image from 'next/image';
+import FallingHearts from './FallingHearts';
 
 export default function Calendar() {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -94,6 +95,7 @@ export default function Calendar() {
 
   return (
     <div className="min-h-screen bg-[#fafafa] dark:bg-gray-900 p-2 md:p-8">
+      <FallingHearts />
       <div className="max-w-7xl mx-auto">
         {/* Header Section - Made more compact on mobile */}
         <div className="mb-4 md:mb-8 text-center space-y-2 md:space-y-4">
