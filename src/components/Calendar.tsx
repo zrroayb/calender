@@ -95,10 +95,6 @@ export default function Calendar() {
     }
   };
 
-  const handleMemoryDeleted = (deletedId: string) => {
-    setMemories(prev => prev.filter(memory => memory.id !== deletedId));
-  };
-
   return (
     <>
       {!loggedInUser ? (
@@ -273,7 +269,6 @@ export default function Calendar() {
                 memory => memory.date === format(selectedDate, 'yyyy-MM-dd')
               )}
               onMemoryAdded={handleMemoryAdded}
-              onMemoryDeleted={handleMemoryDeleted}
               mode={modalMode}
               currentUser={loggedInUser}
             />
