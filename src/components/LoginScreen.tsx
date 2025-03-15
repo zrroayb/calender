@@ -14,6 +14,8 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
   const [password, setPassword] = useState('');
 
   const handleLogin = () => {
+    if (!selectedUser) return;
+
     const correctPassword = selectedUser === 'Ayberk' ? 'selvi' : 'ayberk';
     
     if (password.toLowerCase() === correctPassword) {
