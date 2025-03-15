@@ -43,12 +43,17 @@ export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryA
     try {
       const formData = new FormData();
       formData.append('file', selectedFile);
-      formData.append('upload_preset', process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || 'my-uploads');
+      formData.append('upload_preset', process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || 'my-upload2');
 
       const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
       if (!cloudName) {
         throw new Error('Cloudinary cloud name is not configured');
       }
+
+      console.log('Uploading to Cloudinary...', {
+        cloudName,
+        uploadPreset: process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET,
+      });
 
       const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
         method: 'POST',
@@ -57,11 +62,12 @@ export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryA
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.error('Cloudinary error:', errorData);
+        console.error('Cloudinary error response:', errorData);
         throw new Error(errorData.error?.message || 'Failed to upload image');
       }
 
       const data = await response.json();
+      console.log('Cloudinary response:', data);
 
       if (!data.secure_url) {
         throw new Error('No URL received from Cloudinary');
@@ -76,6 +82,7 @@ export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryA
         comments: [],
       };
 
+      console.log('New memory created:', newMemory);
       onMemoryAdded(newMemory);
       toast.success('Memory added successfully!');
       onClose();
@@ -214,6 +221,10 @@ export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryA
                       sizes="(max-width: 768px) 100vw, 600px"
                       className="object-contain"
                       priority
+                      onError={(e) => {
+                        console.error('Image failed to load:', memory.imageUrl);
+                        e.currentTarget.src = '/placeholder.jpg'; // Add a placeholder image
+                      }}
                     />
                   </motion.div>
                   <div className="space-y-2">
