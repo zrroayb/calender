@@ -25,7 +25,7 @@ export async function DELETE(
     return new Response(JSON.stringify({ message: "Memory deleted successfully" }), {
       status: 200,
     });
-  } catch (_error) {
+  } catch {
     return new Response(JSON.stringify({ error: "Failed to delete memory" }), {
       status: 500,
     });
