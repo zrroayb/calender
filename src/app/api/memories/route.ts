@@ -7,8 +7,9 @@ export async function GET() {
     await connectDB();
     const memories = await Memory.find({}).sort({ date: -1 });
     return NextResponse.json(memories);
-  } catch (error) {
-    return NextResponse.json({ error: 'Failed to fetch memories' }, { status: 500 });
+  } catch (err) {
+    console.error('Error fetching memories:', err);
+    return NextResponse.json({ error: err instanceof Error ? err.message : 'Failed to fetch memories' }, { status: 500 });
   }
 }
 
@@ -18,7 +19,8 @@ export async function POST(request: Request) {
     const memory = await request.json();
     const newMemory = await Memory.create(memory);
     return NextResponse.json(newMemory);
-  } catch (error) {
-    return NextResponse.json({ error: 'Failed to create memory' }, { status: 500 });
+  } catch (err) {
+    console.error('Error creating memory:', err);
+    return NextResponse.json({ error: err instanceof Error ? err.message : 'Failed to create memory' }, { status: 500 });
   }
 } 
