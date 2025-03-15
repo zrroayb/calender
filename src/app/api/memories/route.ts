@@ -9,7 +9,10 @@ export async function GET() {
     const memories = await Memory.find({}).sort({ date: -1 });
     return NextResponse.json(memories);
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to fetch memories' }, { status: 500 });
+    console.error('Error fetching memories:', error);
+    return NextResponse.json({ 
+      error: error instanceof Error ? error.message : 'Failed to fetch memories' 
+    }, { status: 500 });
   }
 }
 
@@ -20,6 +23,9 @@ export async function POST(request: NextRequest) {
     const newMemory = await Memory.create(memory);
     return NextResponse.json(newMemory);
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to create memory' }, { status: 500 });
+    console.error('Error creating memory:', error);
+    return NextResponse.json({ 
+      error: error instanceof Error ? error.message : 'Failed to create memory' 
+    }, { status: 500 });
   }
 } 
