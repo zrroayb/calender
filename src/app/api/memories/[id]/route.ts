@@ -2,13 +2,21 @@ import { NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongodb';
 import { Memory } from '@/models/Memory';
 
+export const dynamic = 'force-dynamic';
+
 export async function DELETE(
-  _req: Request,
+  request: Request,
   { params }: { params: { id: string } }
-): Promise<NextResponse> {
+) {
+  const { id } = params;
+  
+  if (!id) {
+    return NextResponse.json({ error: 'Memory ID is required' }, { status: 400 });
+  }
+
   try {
     await connectDB();
-    const memory = await Memory.findOneAndDelete({ id: params.id });
+    const memory = await Memory.findOneAndDelete({ id });
     
     if (!memory) {
       return NextResponse.json({ error: 'Memory not found' }, { status: 404 });
