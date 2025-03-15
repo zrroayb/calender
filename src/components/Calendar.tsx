@@ -2,18 +2,16 @@
 
 import React, { useState } from 'react';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isToday, addMonths, subMonths, startOfWeek, endOfWeek } from 'date-fns';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Plus, Camera, Heart, Calendar as CalendarIcon } from 'lucide-react';
-import { Memory } from '@/types/memory';
-import MemoryModal from './MemoryModal';
-import { toast, Toaster } from 'react-hot-toast';
+import type { Memory } from '@/types/memory';
+import { Toaster } from 'react-hot-toast';
 import { DAYS_OF_WEEK } from '@/constants';
 
 export default function Calendar() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [memories, setMemories] = useState<Memory[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [memories] = useState<Memory[]>([]);
 
   const monthStart = startOfMonth(currentDate);
   const monthEnd = endOfMonth(currentDate);
@@ -42,7 +40,6 @@ export default function Calendar() {
 
   const handleDayClick = (date: Date) => {
     setSelectedDate(date);
-    setIsModalOpen(true);
   };
 
   return (
@@ -65,12 +62,8 @@ export default function Calendar() {
           >
             Our Special Moments
           </motion.h1>
-          <motion.p 
-            className="text-gray-600 dark:text-gray-400"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-          >
-            Capturing life's beautiful moments, one day at a time ✨
+          <motion.p>
+            Capturing life&apos;s beautiful moments, one day at a time ✨
           </motion.p>
         </div>
 

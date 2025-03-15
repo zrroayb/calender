@@ -13,7 +13,7 @@ interface MemoryModalProps {
   onMemoryAdded: (memory: Memory) => void;
 }
 
-export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryAdded }: MemoryModalProps) {
+export default function MemoryModal({ isOpen, onClose }: MemoryModalProps) {
   if (!isOpen) return null;
 
   return (
