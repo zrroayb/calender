@@ -17,13 +17,23 @@ export default function Calendar() {
   const [modalMode, setModalMode] = useState<'view' | 'add'>('add');
 
   useEffect(() => {
-    const savedMemories = localStorage.getItem('memories');
-    if (savedMemories) {
-      setMemories(JSON.parse(savedMemories));
-    }
+    const fetchMemories = async () => {
+      try {
+        const response = await fetch('/api/memories');
+        if (!response.ok) throw new Error('Failed to fetch memories');
+        const data = await response.json();
+        setMemories(data);
+      } catch (error) {
+        console.error('Error fetching memories:', error);
+        toast.error('Failed to load memories');
+      }
+    };
+
+    fetchMemories();
   }, []);
 
   useEffect(() => {
+    console.log('Saving memories:', memories);
     localStorage.setItem('memories', JSON.stringify(memories));
   }, [memories]);
 
@@ -65,9 +75,25 @@ export default function Calendar() {
     setIsModalOpen(true);
   };
 
-  const handleMemoryAdded = (newMemory: Memory) => {
-    setMemories(prev => [...prev, newMemory]);
-    toast.success('Memory added successfully!');
+  const handleMemoryAdded = async (newMemory: Memory) => {
+    try {
+      const response = await fetch('/api/memories', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newMemory),
+      });
+
+      if (!response.ok) throw new Error('Failed to save memory');
+      
+      const savedMemory = await response.json();
+      setMemories(prev => [...prev, savedMemory]);
+      toast.success('Memory added successfully!');
+    } catch (error) {
+      console.error('Error saving memory:', error);
+      toast.error('Failed to save memory');
+    }
   };
 
   return (
