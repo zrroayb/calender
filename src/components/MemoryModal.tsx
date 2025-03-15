@@ -152,7 +152,7 @@ export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryA
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50"
+        className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-2 md:p-4 z-50"
         onClick={onClose}
       >
         <motion.div
@@ -160,7 +160,7 @@ export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryA
           animate={{ scale: 1 }}
           exit={{ scale: 0.95 }}
           onClick={(e) => e.stopPropagation()}
-          className="bg-white dark:bg-gray-800 rounded-3xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto"
+          className="bg-white dark:bg-gray-800 rounded-2xl md:rounded-3xl p-4 md:p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto"
         >
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -215,18 +215,13 @@ export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryA
               </div>
 
               <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Caption
-                  </label>
-                  <textarea
-                    value={caption}
-                    onChange={(e) => setCaption(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                    rows={3}
-                    placeholder="Write something about this memory..."
-                  />
-                </div>
+                <textarea
+                  value={caption}
+                  onChange={(e) => setCaption(e.target.value)}
+                  className="w-full px-3 py-2 md:px-4 md:py-3 rounded-xl text-sm md:text-base"
+                  rows={3}
+                  placeholder="Write something about this memory..."
+                />
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
