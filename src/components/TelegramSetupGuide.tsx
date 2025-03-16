@@ -293,8 +293,9 @@ export default function TelegramSetupGuide({ isOpen, onClose, currentUser }: Tel
             <div className="flex gap-2">
               <button
                 onClick={() => {
-                  // Use the correct chat ID
-                  setChatId('6250902484');
+                  // Use the correct chat ID for the current user
+                  const testId = currentUser === 'Ayberk' ? '6250902484' : '11111';
+                  setChatId(testId);
                   setChatIdStatus('empty');
                   setChatIdError('');
                 }}

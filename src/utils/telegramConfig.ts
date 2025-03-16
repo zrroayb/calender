@@ -5,8 +5,11 @@ export const TELEGRAM_CONFIG = {
   botToken: "7792393190:AAHkP5aW7fCQbu4jV85aggxWk9dVUsuTf-E",
   botName: "@memoriescalenderbot",
   
-  // Default chat ID - this should be a numeric ID
-  defaultChatId: "6250902484" // Empty to force users to set their own
+  // Default chat IDs are now handled by getDefaultChatId function
+  defaultChatIds: {
+    ayberk: '6250902484',
+    selvi: '11111'
+  }
 };
 
 // Helper function to save chat IDs
@@ -33,13 +36,14 @@ export function getChatId(user: 'Ayberk' | 'Selvi'): string {
         console.log(`Retrieved chat ID for ${user}: ${savedId}`);
         return savedId;
       }
-      console.log(`No saved chat ID for ${user}, using default: ${TELEGRAM_CONFIG.defaultChatId}`);
-      return TELEGRAM_CONFIG.defaultChatId;
+      const defaultId = getDefaultChatId(user);
+      console.log(`No saved chat ID for ${user}, using default: ${defaultId}`);
+      return defaultId;
     }
-    return TELEGRAM_CONFIG.defaultChatId;
+    return getDefaultChatId(user);
   } catch (error) {
     console.error('Failed to get chat ID:', error);
-    return TELEGRAM_CONFIG.defaultChatId;
+    return getDefaultChatId(user);
   }
 }
 
@@ -47,17 +51,16 @@ export function getChatId(user: 'Ayberk' | 'Selvi'): string {
 export function setTestChatIds() {
   try {
     if (typeof window !== 'undefined') {
-      // Use the correct chat ID for both users
-      // In a real scenario, these would be different IDs
-      // But for testing, we can use the same ID for both
-      const chatId = '6250902484';
+      // Use different chat IDs for each user
+      const ayberkChatId = '6250902484';
+      const selviChatId = '11111';
       
-      localStorage.setItem('ayberk_chat_id', chatId);
-      localStorage.setItem('selvi_chat_id', chatId);
+      localStorage.setItem('ayberk_chat_id', ayberkChatId);
+      localStorage.setItem('selvi_chat_id', selviChatId);
       
       console.log('Set chat IDs for both users:', {
-        ayberk: chatId,
-        selvi: chatId
+        ayberk: ayberkChatId,
+        selvi: selviChatId
       });
       return true;
     }
@@ -85,4 +88,9 @@ export function checkChatIds(): { ayberk: boolean, selvi: boolean } {
     console.error('Failed to check chat IDs:', error);
     return { ayberk: false, selvi: false };
   }
+}
+
+// Also update the default chat IDs to be user-specific
+export function getDefaultChatId(user: 'Ayberk' | 'Selvi'): string {
+  return user === 'Ayberk' ? '6250902484' : '11111';
 } 
