@@ -53,7 +53,7 @@ export function setTestChatIds() {
     if (typeof window !== 'undefined') {
       // Use different chat IDs for each user
       const ayberkChatId = '6250902484';
-      const selviChatId = '11111';
+      const selviChatId = '7113830523';
       
       localStorage.setItem('ayberk_chat_id', ayberkChatId);
       localStorage.setItem('selvi_chat_id', selviChatId);
