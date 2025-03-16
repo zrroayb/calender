@@ -7,6 +7,7 @@ import { X, Camera, Send } from 'lucide-react';
 import Image from 'next/image';
 import { format } from 'date-fns';
 import { toast } from 'react-hot-toast';
+import { sendTelegramNotification } from '@/utils/telegramNotifier';
 
 interface MemoryModalProps {
   isOpen: boolean;
@@ -91,6 +92,13 @@ export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryA
       onMemoryAdded(newMemory);
       toast.success('Memory added successfully!');
       onClose();
+
+      // Send Telegram notification
+      await sendTelegramNotification(
+        currentUser,
+        'photo',
+        format(date, 'MMMM d, yyyy')
+      );
     } catch (error) {
       console.error('Error uploading image:', error);
       toast.error(error instanceof Error ? error.message : 'Failed to upload image. Please try again.');
@@ -185,6 +193,13 @@ export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryA
       
       setNewComment('');
       toast.success('Comment added!');
+
+      // Send Telegram notification
+      await sendTelegramNotification(
+        currentUser,
+        'comment',
+        format(date, 'MMMM d, yyyy')
+      );
     } catch (error) {
       console.error('Error adding comment:', error);
       toast.error('Failed to add comment');

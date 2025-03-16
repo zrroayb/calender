@@ -67,8 +67,8 @@ export default function TelegramSetupGuide({ isOpen, onClose, currentUser }: Tel
           </p>
           
           <ol className="list-decimal pl-5 space-y-3 text-gray-600 dark:text-gray-300">
-            <li>Open Telegram and search for <span className="font-mono bg-gray-100 dark:bg-gray-700 px-1 rounded">@{TELEGRAM_CONFIG.botName}</span></li>
-            <li>Start a chat with the bot by clicking "Start" or sending the command below:</li>
+            <li>Open Telegram and search for <span className="font-mono bg-gray-100 dark:bg-gray-700 px-1 rounded">{TELEGRAM_CONFIG.botName}</span></li>
+            <li>Start a chat with the bot by clicking &ldquo;Start&rdquo; or sending the command below:</li>
             <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-700 p-2 rounded">
               <code className="flex-1 font-mono">/start</code>
               <button 
@@ -100,7 +100,7 @@ export default function TelegramSetupGuide({ isOpen, onClose, currentUser }: Tel
           
           <div className="bg-purple-50 dark:bg-purple-900/20 p-3 rounded-lg mt-4">
             <p className="text-sm text-purple-700 dark:text-purple-300">
-              <strong>Note:</strong> This setup ensures you'll receive notifications when your partner adds new memories or comments to your shared calendar.
+              <strong>Note:</strong> This setup ensures you&apos;ll receive notifications when your partner adds new memories or comments to your shared calendar.
             </p>
           </div>
           
