@@ -3,17 +3,22 @@ import { TELEGRAM_CONFIG, getChatId } from '@/utils/telegramConfig';
 
 export async function POST(request: Request) {
   try {
+    console.log('Love message API called');
     const { sender } = await request.json();
+    console.log('Sender:', sender);
     
     if (!sender || (sender !== 'Ayberk' && sender !== 'Selvi')) {
+      console.error('Invalid sender:', sender);
       return NextResponse.json({ success: false, error: 'Invalid sender' }, { status: 400 });
     }
     
     // Determine recipient based on sender
     const recipient = sender === 'Ayberk' ? 'Selvi' : 'Ayberk';
     const chatId = getChatId(recipient);
+    console.log(`Sending love message from ${sender} to ${recipient} with chat ID: ${chatId}`);
     
     if (!chatId) {
+      console.error(`No chat ID found for ${recipient}`);
       return NextResponse.json({ 
         success: false, 
         error: `No chat ID found for ${recipient}` 
@@ -37,8 +42,10 @@ export async function POST(request: Request) {
     );
     
     const data = await response.json();
+    console.log('Telegram API response:', data);
     
     if (data.ok) {
+      console.log('Love message sent successfully');
       return NextResponse.json({ success: true });
     } else {
       console.error('Telegram API error:', data);
