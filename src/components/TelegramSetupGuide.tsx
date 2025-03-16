@@ -366,7 +366,7 @@ export default function TelegramSetupGuide({ isOpen, onClose, currentUser }: Tel
               Fix Selvi&apos;s Chat ID
             </button>
             <p className="text-xs text-green-600 dark:text-green-400 mt-1">
-              Use this if notifications to Selvi aren't working
+              Use this if notifications to Selvi aren&apos;t working
             </p>
           </div>
           
