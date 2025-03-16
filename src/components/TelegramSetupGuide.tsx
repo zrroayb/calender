@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { X, MessageCircle, Copy, Check, Save } from 'lucide-react';
 import { TELEGRAM_CONFIG, saveChatId, getChatId } from '@/utils/telegramConfig';
+import { toast } from 'react-hot-toast';
 
 interface TelegramSetupGuideProps {
   isOpen: boolean;
@@ -35,6 +36,38 @@ export default function TelegramSetupGuide({ isOpen, onClose, currentUser }: Tel
     saveChatId(currentUser, chatId);
     setSaveSuccess(true);
     setTimeout(() => setSaveSuccess(false), 3000);
+  };
+  
+  const handleTestNotification = async () => {
+    try {
+      // Show loading state
+      setSaveSuccess(true);
+      
+      // Send a test notification
+      const result = await fetch('/api/test-telegram', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          chatId,
+          user: currentUser
+        }),
+      });
+      
+      const data = await result.json();
+      
+      if (data.success) {
+        toast.success('Test notification sent successfully!');
+      } else {
+        toast.error(`Failed to send test notification: ${data.error}`);
+      }
+    } catch (error) {
+      console.error('Test notification error:', error);
+      toast.error('Failed to send test notification. Check console for details.');
+    } finally {
+      setSaveSuccess(false);
+    }
   };
   
   if (!isOpen) return null;
@@ -102,6 +135,16 @@ export default function TelegramSetupGuide({ isOpen, onClose, currentUser }: Tel
             <p className="text-sm text-purple-700 dark:text-purple-300">
               <strong>Note:</strong> This setup ensures you&apos;ll receive notifications when your partner adds new memories or comments to your shared calendar.
             </p>
+          </div>
+          
+          <div className="mt-4 flex justify-end">
+            <button
+              onClick={handleTestNotification}
+              className="px-4 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-lg text-sm"
+              disabled={!chatId.trim()}
+            >
+              Test Notification
+            </button>
           </div>
           
           <div className="pt-4">

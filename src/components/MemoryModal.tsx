@@ -94,11 +94,17 @@ export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryA
       onClose();
 
       // Send Telegram notification
-      await sendTelegramNotification(
+      const notificationSent = await sendTelegramNotification(
         currentUser,
         'photo',
         format(date, 'MMMM d, yyyy')
       );
+
+      if (notificationSent) {
+        toast.success('Notification sent to your partner!');
+      } else {
+        toast.error('Failed to send notification. Check Telegram setup.');
+      }
     } catch (error) {
       console.error('Error uploading image:', error);
       toast.error(error instanceof Error ? error.message : 'Failed to upload image. Please try again.');
@@ -195,11 +201,17 @@ export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryA
       toast.success('Comment added!');
 
       // Send Telegram notification
-      await sendTelegramNotification(
+      const notificationSent = await sendTelegramNotification(
         currentUser,
         'comment',
         format(date, 'MMMM d, yyyy')
       );
+
+      if (notificationSent) {
+        toast.success('Notification sent to your partner!');
+      } else {
+        toast.error('Failed to send notification. Check Telegram setup.');
+      }
     } catch (error) {
       console.error('Error adding comment:', error);
       toast.error('Failed to add comment');
