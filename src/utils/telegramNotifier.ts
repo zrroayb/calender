@@ -34,9 +34,18 @@ export async function sendTelegramNotification(
       return false;
     }
     
-    // Create message with more details
+    // Create message with more details and a clickable link
     const actionText = action === 'photo' ? 'added a new photo' : 'left a comment';
-    const message = `❤️ ${sender} ${actionText} on ${date}! Check your memory calendar!`;
+    
+    // Format the date for the URL (YYYY-MM-DD)
+    const dateObj = new Date(date);
+    const formattedDate = `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, '0')}-${String(dateObj.getDate()).padStart(2, '0')}`;
+    
+    // Create the calendar URL
+    const calendarUrl = `https://memories-calendar.vercel.app/?date=${formattedDate}`;
+    
+    // Create HTML message with a clickable link
+    const message = `❤️ ${sender} ${actionText} on ${date}!\n\n<a href="${calendarUrl}">Click here to view your memory calendar</a>`;
     
     console.log(`Sending message to ${cleanedChatId}: ${message}`);
     
@@ -51,7 +60,8 @@ export async function sendTelegramNotification(
         body: JSON.stringify({
           chat_id: cleanedChatId,
           text: message,
-          parse_mode: 'HTML'
+          parse_mode: 'HTML',
+          disable_web_page_preview: false
         }),
       }
     );
