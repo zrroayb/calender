@@ -33,13 +33,13 @@ export function getChatId(user: 'Ayberk' | 'Selvi'): string {
         console.log(`Retrieved chat ID for ${user}: ${savedId}`);
         return savedId;
       }
-      console.log(`No valid chat ID for ${user}, notifications will be disabled`);
-      return '';
+      console.log(`No saved chat ID for ${user}, using default: ${TELEGRAM_CONFIG.defaultChatId}`);
+      return TELEGRAM_CONFIG.defaultChatId;
     }
-    return '';
+    return TELEGRAM_CONFIG.defaultChatId;
   } catch (error) {
     console.error('Failed to get chat ID:', error);
-    return '';
+    return TELEGRAM_CONFIG.defaultChatId;
   }
 }
 
