@@ -13,6 +13,7 @@ import FallingHearts from './FallingHearts';
 import LoginScreen from './LoginScreen';
 import MobileFooter from './MobileFooter';
 import AnniversaryMessage from './AnniversaryMessage';
+import BackgroundDecoration from './BackgroundDecoration';
 
 export default function Calendar() {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -128,10 +129,11 @@ export default function Calendar() {
       {!loggedInUser ? (
         <LoginScreen onLogin={setLoggedInUser} />
       ) : (
-        <div className="min-h-screen bg-[#fafafa] dark:bg-gray-900 p-2 md:p-8 pb-16 md:pb-8">
+        <div className="min-h-screen bg-[#fafafa] dark:bg-gray-900 p-2 md:p-8 pb-16 md:pb-8 relative">
+          <BackgroundDecoration />
           <FallingHearts />
           <AnniversaryMessage user={loggedInUser} />
-          <div className="max-w-7xl mx-auto">
+          <div className="max-w-7xl mx-auto relative z-10">
             {/* Header Section - Made more compact on mobile */}
             <div className="mb-4 md:mb-8 text-center space-y-2 md:space-y-4">
               <motion.div 

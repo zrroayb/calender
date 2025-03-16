@@ -12,7 +12,7 @@ export default function MobileFooter({ currentUser }: MobileFooterProps) {
     <motion.div 
       initial={{ y: 100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      className="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-2 px-4 z-40"
+      className="md:hidden fixed bottom-0 left-0 right-0 bg-white/90 dark:bg-gray-800/90 backdrop-blur-md border-t border-gray-200 dark:border-gray-700 py-3 px-4 z-40 shadow-lg"
     >
       <div className="flex items-center justify-between">
         <div className="flex flex-col items-center">
