@@ -1,6 +1,6 @@
 'use client';
 
-import { Heart, Calendar as CalendarIcon, User, Settings } from 'lucide-react';
+import { Heart, Calendar as CalendarIcon, User } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface MobileFooterProps {
