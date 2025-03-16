@@ -1,5 +1,43 @@
 import { NextResponse } from 'next/server';
 
+// Define types for Telegram API responses
+interface TelegramChat {
+  id: number;
+  type: string;
+  title?: string;
+  username?: string;
+  first_name?: string;
+  last_name?: string;
+}
+
+interface TelegramMessage {
+  message_id: number;
+  from?: {
+    id: number;
+    is_bot: boolean;
+    first_name: string;
+    username?: string;
+  };
+  chat: TelegramChat;
+  date: number;
+  text?: string;
+}
+
+interface TelegramUpdate {
+  update_id: number;
+  message?: TelegramMessage;
+  edited_message?: TelegramMessage;
+  channel_post?: TelegramMessage;
+  edited_channel_post?: TelegramMessage;
+}
+
+interface TelegramResponse {
+  ok: boolean;
+  result: TelegramUpdate[];
+  description?: string;
+  error_code?: number;
+}
+
 export async function POST(request: Request) {
   try {
     const { botToken } = await request.json();
@@ -17,7 +55,7 @@ export async function POST(request: Request) {
       { method: 'GET' }
     );
     
-    const data = await response.json();
+    const data: TelegramResponse = await response.json();
     console.log('Telegram getUpdates response:', data);
     
     if (!data.ok) {
