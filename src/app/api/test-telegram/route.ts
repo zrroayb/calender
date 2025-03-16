@@ -9,9 +9,20 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, error: 'Chat ID is required' }, { status: 400 });
     }
     
+    // Validate chat ID format
+    const cleanedChatId = chatId.trim().replace(/[^0-9-]/g, '');
+    if (!cleanedChatId) {
+      return NextResponse.json({ 
+        success: false, 
+        error: 'Invalid chat ID format. Please use only numbers.' 
+      }, { status: 400 });
+    }
+    
     if (!TELEGRAM_CONFIG.botToken) {
       return NextResponse.json({ success: false, error: 'Bot token is not configured' }, { status: 500 });
     }
+    
+    console.log(`Sending test message to chat ID: ${cleanedChatId}`);
     
     // Send a test message
     const response = await fetch(
@@ -22,7 +33,7 @@ export async function POST(request: Request) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          chat_id: chatId,
+          chat_id: cleanedChatId,
           text: `🔔 Test notification from ${user}! If you're seeing this, your Telegram notifications are working correctly.`,
           parse_mode: 'HTML'
         }),
@@ -30,14 +41,22 @@ export async function POST(request: Request) {
     );
     
     const data = await response.json();
+    console.log('Telegram API response:', data);
     
     if (data.ok) {
       return NextResponse.json({ success: true });
     } else {
+      let errorMessage = data.description || 'Unknown Telegram API error';
+      
+      // Provide more helpful error messages
+      if (data.error_code === 400 && data.description?.includes('chat not found')) {
+        errorMessage = 'Chat not found. Make sure you have started a conversation with the bot and are using the correct numeric Chat ID.';
+      }
+      
       console.error('Telegram API error:', data);
       return NextResponse.json({ 
         success: false, 
-        error: data.description || 'Unknown Telegram API error' 
+        error: errorMessage
       }, { status: 500 });
     }
   } catch (error) {

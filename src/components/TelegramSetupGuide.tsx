@@ -17,6 +17,7 @@ export default function TelegramSetupGuide({ isOpen, onClose, currentUser }: Tel
   const [chatId, setChatId] = useState('');
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [chatIdStatus, setChatIdStatus] = useState<'empty' | 'saved' | 'default'>('empty');
+  const [chatIdError, setChatIdError] = useState('');
   
   // Load saved chat ID on open
   useEffect(() => {
@@ -44,9 +45,22 @@ export default function TelegramSetupGuide({ isOpen, onClose, currentUser }: Tel
   };
   
   const handleSaveChatId = () => {
-    saveChatId(currentUser, chatId);
+    // Validate the chat ID format
+    const cleanedChatId = chatId.trim().replace(/[^0-9-]/g, '');
+    
+    if (!cleanedChatId) {
+      setChatIdError('Please enter a valid numeric chat ID');
+      return;
+    }
+    
+    if (cleanedChatId !== chatId.trim()) {
+      setChatId(cleanedChatId);
+    }
+    
+    saveChatId(currentUser, cleanedChatId);
     setSaveSuccess(true);
     setChatIdStatus('saved');
+    setChatIdError('');
     setTimeout(() => setSaveSuccess(false), 3000);
   };
   
@@ -144,7 +158,13 @@ export default function TelegramSetupGuide({ isOpen, onClose, currentUser }: Tel
               </button>
             </div>
             <li>The bot will respond with a welcome message and your Chat ID</li>
-            <li>Enter your Chat ID below:</li>
+            <li>
+              <p>Enter your Chat ID below (numbers only):</p>
+              <div className="mt-2 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg text-xs text-blue-700 dark:text-blue-300">
+                <p><strong>Important:</strong> The Chat ID should be a number like <code>123456789</code> or <code>-1001234567890</code>.</p>
+                <p className="mt-1">If you don&apos;t see your Chat ID, send the <code>/id</code> command to the bot.</p>
+              </div>
+            </li>
             <div className="flex items-center gap-2">
               <input
                 type="text"
@@ -152,9 +172,11 @@ export default function TelegramSetupGuide({ isOpen, onClose, currentUser }: Tel
                 onChange={(e) => {
                   setChatId(e.target.value);
                   setChatIdStatus(e.target.value ? 'empty' : 'default');
+                  setChatIdError('');
                 }}
-                placeholder="Enter your Chat ID"
+                placeholder="Enter your Chat ID (numbers only)"
                 className={`flex-1 px-3 py-2 rounded-lg border ${
+                  chatIdError ? 'border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/20' :
                   chatIdStatus === 'default' 
                     ? 'border-yellow-300 dark:border-yellow-600 bg-yellow-50 dark:bg-yellow-900/20' 
                     : 'border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700'
@@ -168,6 +190,11 @@ export default function TelegramSetupGuide({ isOpen, onClose, currentUser }: Tel
                 {saveSuccess ? <Check size={20} /> : <Save size={20} />}
               </button>
             </div>
+            {chatIdError && (
+              <p className="text-xs text-red-600 dark:text-red-400 mt-1">
+                {chatIdError}
+              </p>
+            )}
           </ol>
           
           {chatIdStatus === 'default' && (

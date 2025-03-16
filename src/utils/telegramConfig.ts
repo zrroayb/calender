@@ -5,16 +5,18 @@ export const TELEGRAM_CONFIG = {
   botToken: "7792393190:AAHkP5aW7fCQbu4jV85aggxWk9dVUsuTf-E",
   botName: "@memoriescalenderbot",
   
-  // Default chat IDs (for testing)
-  defaultChatId: "gcrayb"
+  // Default chat ID - this should be a numeric ID
+  defaultChatId: "" // Empty to force users to set their own
 };
 
 // Helper function to save chat IDs
 export function saveChatId(user: 'Ayberk' | 'Selvi', chatId: string): void {
   try {
     if (typeof window !== 'undefined') {
-      localStorage.setItem(`${user.toLowerCase()}_chat_id`, chatId);
-      console.log(`Saved chat ID for ${user}: ${chatId}`);
+      // Ensure the chat ID is in the correct format (numeric)
+      const cleanedChatId = chatId.trim().replace(/[^0-9-]/g, '');
+      localStorage.setItem(`${user.toLowerCase()}_chat_id`, cleanedChatId);
+      console.log(`Saved chat ID for ${user}: ${cleanedChatId}`);
     }
   } catch (error) {
     console.error('Failed to save chat ID:', error);
@@ -26,14 +28,17 @@ export function getChatId(user: 'Ayberk' | 'Selvi'): string {
   try {
     if (typeof window !== 'undefined') {
       const savedId = localStorage.getItem(`${user.toLowerCase()}_chat_id`);
-      // If no saved ID, use the default
-      const chatId = savedId || TELEGRAM_CONFIG.defaultChatId;
-      console.log(`Retrieved chat ID for ${user}: ${chatId}`);
-      return chatId;
+      // Only return saved IDs that are valid (non-empty)
+      if (savedId && savedId.trim()) {
+        console.log(`Retrieved chat ID for ${user}: ${savedId}`);
+        return savedId;
+      }
+      console.log(`No valid chat ID for ${user}, notifications will be disabled`);
+      return '';
     }
-    return TELEGRAM_CONFIG.defaultChatId;
+    return '';
   } catch (error) {
     console.error('Failed to get chat ID:', error);
-    return TELEGRAM_CONFIG.defaultChatId;
+    return '';
   }
 } 

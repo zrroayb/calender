@@ -22,23 +22,23 @@ export async function sendTelegramNotification(
     
     if (!chatId) {
       console.error(`Telegram notification skipped: No chat ID for ${recipient}`);
+      toast.error(`Can't send notification: ${recipient}'s chat ID is not set`);
       return false;
     }
     
-    // Check if using default chat ID
-    const storedChatId = typeof window !== 'undefined' 
-      ? localStorage.getItem(`${recipient.toLowerCase()}_chat_id`) 
-      : null;
-    
-    if (!storedChatId && chatId === TELEGRAM_CONFIG.defaultChatId) {
-      console.warn(`Using default chat ID for ${recipient}. Notifications may not be reliable.`);
+    // Validate chat ID format
+    const cleanedChatId = chatId.trim().replace(/[^0-9-]/g, '');
+    if (!cleanedChatId) {
+      console.error(`Invalid chat ID format for ${recipient}: ${chatId}`);
+      toast.error(`Invalid chat ID format for ${recipient}`);
+      return false;
     }
     
     // Create message
     const actionText = action === 'photo' ? 'added a new photo' : 'left a comment';
     const message = `❤️ ${sender} ${actionText} on ${date}! Check your memory calendar!`;
     
-    console.log(`Sending message: ${message}`);
+    console.log(`Sending message to ${cleanedChatId}: ${message}`);
     
     // Send message via Telegram API
     const response = await fetch(
@@ -49,7 +49,7 @@ export async function sendTelegramNotification(
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          chat_id: chatId,
+          chat_id: cleanedChatId,
           text: message,
           parse_mode: 'HTML'
         }),
