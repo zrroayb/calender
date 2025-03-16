@@ -16,9 +16,10 @@ interface MemoryModalProps {
   onMemoryAdded: (memory: Memory) => void;
   mode: 'view' | 'add';
   currentUser: 'Ayberk' | 'Selvi';
+  setMemories: React.Dispatch<React.SetStateAction<Memory[]>>;
 }
 
-export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryAdded, mode, currentUser }: MemoryModalProps) {
+export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryAdded, mode, currentUser, setMemories }: MemoryModalProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string>('');
   const [caption, setCaption] = useState('');
@@ -174,7 +175,12 @@ export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryA
 
       const updatedMemory = await response.json();
       
-      // Update local state
+      // Update local state for the current view
+      setMemories(prev => prev.map(mem => 
+        mem.id === memoryId ? updatedMemory : mem
+      ));
+      
+      // Also update the parent component's state
       onMemoryAdded(updatedMemory);
       
       setNewComment('');

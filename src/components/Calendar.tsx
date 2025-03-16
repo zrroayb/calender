@@ -76,19 +76,45 @@ export default function Calendar() {
 
   const handleMemoryAdded = async (newMemory: Memory) => {
     try {
-      const response = await fetch('/api/memories', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newMemory),
-      });
-
-      if (!response.ok) throw new Error('Failed to save memory');
+      // Check if this is an update to an existing memory
+      const existingIndex = memories.findIndex(m => m.id === newMemory.id);
       
-      const savedMemory = await response.json();
-      setMemories(prev => [...prev, savedMemory]);
-      toast.success('Memory added successfully!');
+      if (existingIndex >= 0) {
+        // This is an update (like adding a comment)
+        const response = await fetch(`/api/memories/${newMemory.id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(newMemory),
+        });
+
+        if (!response.ok) throw new Error('Failed to update memory');
+        
+        const updatedMemory = await response.json();
+        
+        // Update the memory in the array
+        setMemories(prev => prev.map(m => 
+          m.id === updatedMemory.id ? updatedMemory : m
+        ));
+        
+        toast.success('Memory updated successfully!');
+      } else {
+        // This is a new memory
+        const response = await fetch('/api/memories', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(newMemory),
+        });
+
+        if (!response.ok) throw new Error('Failed to save memory');
+        
+        const savedMemory = await response.json();
+        setMemories(prev => [...prev, savedMemory]);
+        toast.success('Memory added successfully!');
+      }
     } catch (error) {
       console.error('Error saving memory:', error);
       toast.error('Failed to save memory');
