@@ -181,7 +181,7 @@ export default function TelegramSetupGuide({ isOpen, onClose, currentUser }: Tel
     try {
       if (typeof window !== 'undefined') {
         localStorage.setItem('selvi_chat_id', '7113830523');
-        toast.success('Fixed Selvi\'s chat ID!');
+        toast.success('Fixed Selvi&apos;s chat ID!');
         
         // Update the current chat ID if the current user is Selvi
         if (currentUser === 'Selvi') {
@@ -190,8 +190,8 @@ export default function TelegramSetupGuide({ isOpen, onClose, currentUser }: Tel
         }
       }
     } catch (error) {
-      console.error('Failed to fix Selvi\'s chat ID:', error);
-      toast.error('Failed to fix Selvi\'s chat ID');
+      console.error('Failed to fix Selvi&apos;s chat ID:', error);
+      toast.error('Failed to fix Selvi&apos;s chat ID');
     }
   };
   
@@ -363,7 +363,7 @@ export default function TelegramSetupGuide({ isOpen, onClose, currentUser }: Tel
               onClick={handleFixSelviChatId}
               className="w-full px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg text-sm"
             >
-              Fix Selvi's Chat ID
+              Fix Selvi&apos;s Chat ID
             </button>
             <p className="text-xs text-green-600 dark:text-green-400 mt-1">
               Use this if notifications to Selvi aren't working
