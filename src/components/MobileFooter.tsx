@@ -2,7 +2,6 @@
 
 import { Heart, Calendar as CalendarIcon } from 'lucide-react';
 import { motion } from 'framer-motion';
-import Image from 'next/image';
 
 interface MobileFooterProps {
   currentUser: 'Ayberk' | 'Selvi';
@@ -32,19 +31,22 @@ export default function MobileFooter({ currentUser }: MobileFooterProps) {
         </div>
         
         <div className="flex flex-col items-center">
-          <div className={`w-8 h-8 rounded-full overflow-hidden border-2 ${
-            currentUser === 'Ayberk' ? 'border-purple-500' : 'border-pink-500'
+          <div className={`w-8 h-8 rounded-full overflow-hidden border-2 flex items-center justify-center ${
+            currentUser === 'Ayberk' ? 'border-purple-500 bg-purple-100' : 'border-pink-500 bg-pink-100'
           }`}>
-            <Image 
-              src={currentUser === 'Ayberk' 
-                ? '/male-avatar.png' 
-                : '/female-avatar.png'
-              }
-              alt={currentUser}
-              width={32}
-              height={32}
-              className="object-cover"
-            />
+            {currentUser === 'Ayberk' ? (
+              // Male avatar SVG
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" 
+                  fill="#9333ea" />
+              </svg>
+            ) : (
+              // Female avatar SVG
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" 
+                  fill="#ec4899" />
+              </svg>
+            )}
           </div>
           <span className="text-xs mt-1 text-gray-600 dark:text-gray-300">{currentUser}</span>
         </div>
