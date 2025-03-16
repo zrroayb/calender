@@ -1,7 +1,8 @@
 'use client';
 
-import { Heart, Calendar as CalendarIcon, User } from 'lucide-react';
+import { Heart, Calendar as CalendarIcon } from 'lucide-react';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 
 interface MobileFooterProps {
   currentUser: 'Ayberk' | 'Selvi';
@@ -31,10 +32,19 @@ export default function MobileFooter({ currentUser }: MobileFooterProps) {
         </div>
         
         <div className="flex flex-col items-center">
-          <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
-            currentUser === 'Ayberk' ? 'bg-purple-100 text-purple-600' : 'bg-pink-100 text-pink-600'
+          <div className={`w-8 h-8 rounded-full overflow-hidden border-2 ${
+            currentUser === 'Ayberk' ? 'border-purple-500' : 'border-pink-500'
           }`}>
-            <User className="w-4 h-4" />
+            <Image 
+              src={currentUser === 'Ayberk' 
+                ? '/male-avatar.png' 
+                : '/female-avatar.png'
+              }
+              alt={currentUser}
+              width={32}
+              height={32}
+              className="object-cover"
+            />
           </div>
           <span className="text-xs mt-1 text-gray-600 dark:text-gray-300">{currentUser}</span>
         </div>
