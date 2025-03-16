@@ -3,7 +3,6 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { Heart } from 'lucide-react';
-import { toast } from 'react-hot-toast';
 
 interface LoginScreenProps {
   onLogin: (user: 'Ayberk' | 'Selvi') => void;
@@ -14,7 +13,18 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
   const [password, setPassword] = useState('');
 
   const handleLogin = (user: 'Ayberk' | 'Selvi') => {
+    if (!user) return;
+    
     console.log('LoginScreen: User selected:', user);
+    
+    // Check password
+    const correctPassword = user === 'Ayberk' ? 'selvi' : 'ayberk';
+    
+    if (password.toLowerCase() !== correctPassword) {
+      console.error('LoginScreen: Incorrect password');
+      alert('Incorrect password');
+      return;
+    }
     
     // Save to localStorage for persistence
     try {
