@@ -2,19 +2,12 @@ import { NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongodb';
 import { Memory } from '@/models/Memory';
 
-interface RouteParams {
-  params: {
-    id: string;
-  };
-}
-
-export async function POST(request: Request, { params }: RouteParams) {
+export async function POST(request: Request) {
   try {
-    const { id } = params;
     await connectDB();
-    const comment = await request.json();
+    const { memoryId, comment } = await request.json();
     
-    const memory = await Memory.findOne({ id: id });
+    const memory = await Memory.findOne({ id: memoryId });
     if (!memory) {
       return NextResponse.json({ error: 'Memory not found' }, { status: 404 });
     }

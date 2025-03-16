@@ -156,12 +156,15 @@ export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryA
         createdAt: new Date().toISOString(),
       };
 
-      const response = await fetch(`/api/memories/${memoryId}/comments`, {
+      const response = await fetch('/api/comments', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(comment),
+        body: JSON.stringify({ 
+          memoryId, 
+          comment 
+        }),
       });
 
       if (!response.ok) {
