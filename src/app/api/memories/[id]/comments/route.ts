@@ -1,14 +1,14 @@
 import { NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongodb';
 import { Memory } from '@/models/Memory';
-import { NextRequest } from 'next/server';
 
+// Use the correct type for route handlers in Next.js App Router
 export async function POST(
-  request: NextRequest,
-  context: { params: { id: string } }
+  request: Request,
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = context.params;
+    const { id } = params;
     await connectDB();
     const comment = await request.json();
     
