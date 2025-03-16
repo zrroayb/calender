@@ -35,7 +35,7 @@ export async function POST(request: Request) {
         },
         body: JSON.stringify({
           chat_id: chatId,
-          text: `❤️ Seni seviyorum <3 ❤️\n\n- ${sender}`,
+          text: `❤️ Seni seviyorum ❤️\n\n- ${sender}`,
           parse_mode: 'HTML',
         }),
       }
