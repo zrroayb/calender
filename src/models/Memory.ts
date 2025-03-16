@@ -1,5 +1,19 @@
 import mongoose from 'mongoose';
 
+const CommentSchema = new mongoose.Schema({
+  id: String,
+  text: String,
+  author: {
+    type: String,
+    enum: ['Ayberk', 'Selvi'],
+    required: true
+  },
+  createdAt: {
+    type: String,
+    default: () => new Date().toISOString()
+  }
+});
+
 const MemorySchema = new mongoose.Schema({
   id: String,
   date: String,
@@ -8,16 +22,12 @@ const MemorySchema = new mongoose.Schema({
   author: {
     type: String,
     enum: ['Ayberk', 'Selvi'],
+    required: true
   },
-  comments: [{
-    id: String,
-    text: String,
-    author: {
-      type: String,
-      enum: ['Ayberk', 'Selvi'],
-    },
-    createdAt: String,
-  }],
+  comments: {
+    type: [CommentSchema],
+    default: []
+  }
 }, {
   timestamps: true,
 });

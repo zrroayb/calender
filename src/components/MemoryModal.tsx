@@ -164,7 +164,10 @@ export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryA
         body: JSON.stringify(comment),
       });
 
-      if (!response.ok) throw new Error('Failed to add comment');
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to add comment');
+      }
 
       const updatedMemory = await response.json();
       
