@@ -1,13 +1,17 @@
 'use client';
 
-import { Heart, Calendar as CalendarIcon } from 'lucide-react';
+import { Heart, Calendar as CalendarIcon, MessageCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useState } from 'react';
+import TelegramSetupGuide from './TelegramSetupGuide';
 
 interface MobileFooterProps {
   currentUser: 'Ayberk' | 'Selvi';
 }
 
 export default function MobileFooter({ currentUser }: MobileFooterProps) {
+  const [showTelegramSetup, setShowTelegramSetup] = useState(false);
+
   return (
     <motion.div 
       initial={{ y: 100, opacity: 0 }}
@@ -28,6 +32,19 @@ export default function MobileFooter({ currentUser }: MobileFooterProps) {
             </span>
           </div>
           <span className="text-xs mt-1 text-gray-600 dark:text-gray-300">Memories</span>
+        </div>
+        
+        <div className="flex flex-col items-center">
+          <button 
+            onClick={() => setShowTelegramSetup(true)}
+            className="relative"
+          >
+            <MessageCircle className="w-6 h-6 text-purple-500" />
+            <span className="absolute -top-1 -right-1 bg-pink-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">
+              !
+            </span>
+          </button>
+          <span className="text-xs mt-1 text-gray-600 dark:text-gray-300">Notify</span>
         </div>
         
         <div className="flex flex-col items-center">
@@ -83,6 +100,11 @@ export default function MobileFooter({ currentUser }: MobileFooterProps) {
           <span className="text-xs mt-1 text-gray-600 dark:text-gray-300">{currentUser}</span>
         </div>
       </div>
+      <TelegramSetupGuide 
+        isOpen={showTelegramSetup} 
+        onClose={() => setShowTelegramSetup(false)} 
+        currentUser={currentUser}
+      />
     </motion.div>
   );
 } 
