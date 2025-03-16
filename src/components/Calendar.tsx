@@ -297,6 +297,7 @@ export default function Calendar() {
               onMemoryAdded={handleMemoryAdded}
               mode={modalMode}
               currentUser={loggedInUser}
+              setMemories={setMemories}
             />
           )}
         </div>
