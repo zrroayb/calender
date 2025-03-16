@@ -101,7 +101,8 @@ export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryA
       );
 
       if (notificationSent) {
-        toast.success('Notification sent to your partner!');
+        const recipient = currentUser === 'Ayberk' ? 'Selvi' : 'Ayberk';
+        toast.success(`Notification sent to ${recipient}!`);
       } else {
         toast.error('Failed to send notification. Check Telegram setup.');
       }
@@ -208,7 +209,8 @@ export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryA
       );
 
       if (notificationSent) {
-        toast.success('Notification sent to your partner!');
+        const recipient = currentUser === 'Ayberk' ? 'Selvi' : 'Ayberk';
+        toast.success(`Notification sent to ${recipient}!`);
       } else {
         toast.error('Failed to send notification. Check Telegram setup.');
       }

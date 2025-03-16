@@ -34,7 +34,7 @@ export async function sendTelegramNotification(
       return false;
     }
     
-    // Create message
+    // Create message with more details
     const actionText = action === 'photo' ? 'added a new photo' : 'left a comment';
     const message = `❤️ ${sender} ${actionText} on ${date}! Check your memory calendar!`;
     
@@ -59,7 +59,7 @@ export async function sendTelegramNotification(
     const data = await response.json();
     
     if (data.ok) {
-      console.log('Telegram notification sent successfully');
+      console.log(`Telegram notification sent successfully to ${recipient}`);
       return true;
     } else {
       console.error('Telegram API error:', data);

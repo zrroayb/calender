@@ -173,6 +173,9 @@ export default function TelegramSetupGuide({ isOpen, onClose, currentUser }: Tel
     }
   };
   
+  const otherUser = currentUser === 'Ayberk' ? 'Selvi' : 'Ayberk';
+  const otherUserChatId = localStorage.getItem(`${otherUser.toLowerCase()}_chat_id`) || 'not set';
+  
   if (!isOpen) return null;
   
   return (
@@ -320,6 +323,18 @@ export default function TelegramSetupGuide({ isOpen, onClose, currentUser }: Tel
             </button>
             <p className="text-xs text-yellow-600 dark:text-yellow-400 mt-2">
               This will set working chat IDs for both users.
+            </p>
+          </div>
+          
+          <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+            <p className="text-sm text-blue-700 dark:text-blue-300">
+              <strong>Important:</strong> You are setting up notifications for <strong>{currentUser}</strong>.
+            </p>
+            <p className="text-sm text-blue-700 dark:text-blue-300 mt-1">
+              When you add content, notifications will be sent to <strong>{otherUser}</strong>.
+            </p>
+            <p className="text-xs text-blue-600 dark:text-blue-400 mt-2">
+              {otherUser}'s chat ID: {otherUserChatId !== 'not set' ? '✅ Set' : '❌ Not set'}
             </p>
           </div>
           

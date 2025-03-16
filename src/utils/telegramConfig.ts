@@ -48,12 +48,17 @@ export function setTestChatIds() {
   try {
     if (typeof window !== 'undefined') {
       // Use the correct chat ID for both users
-      const testChatId = '6250902484';
+      // In a real scenario, these would be different IDs
+      // But for testing, we can use the same ID for both
+      const chatId = '6250902484';
       
-      localStorage.setItem('ayberk_chat_id', testChatId);
-      localStorage.setItem('selvi_chat_id', testChatId);
+      localStorage.setItem('ayberk_chat_id', chatId);
+      localStorage.setItem('selvi_chat_id', chatId);
       
-      console.log('Set chat IDs for both users:', testChatId);
+      console.log('Set chat IDs for both users:', {
+        ayberk: chatId,
+        selvi: chatId
+      });
       return true;
     }
     return false;
