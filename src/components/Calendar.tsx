@@ -125,11 +125,11 @@ export default function Calendar() {
   };
 
   return (
-    <>
+    <div className="min-h-screen min-w-full bg-transparent p-0 m-0 overflow-x-hidden">
       {!loggedInUser ? (
         <LoginScreen onLogin={setLoggedInUser} />
       ) : (
-        <div className="min-h-screen bg-[#fafafa] dark:bg-gray-900 p-2 md:p-8 pb-16 md:pb-8 relative">
+        <div className="min-h-screen w-full bg-transparent p-2 md:p-8 pb-16 md:pb-8 relative">
           <BackgroundDecoration />
           <FallingHearts />
           <AnniversaryMessage user={loggedInUser} />
@@ -310,6 +310,6 @@ export default function Calendar() {
           <MobileFooter currentUser={loggedInUser} />
         </div>
       )}
-    </>
+    </div>
   );
 } 
