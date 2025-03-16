@@ -68,7 +68,8 @@ export async function POST(request: Request) {
     // Extract chat IDs from the updates
     const chatIds = data.result
       .filter(update => update.message && update.message.chat)
-      .map(update => update.message.chat.id)
+      // Use non-null assertion since we've already filtered for updates with messages
+      .map(update => update.message!.chat.id)
       .filter((id, index, self) => self.indexOf(id) === index); // Remove duplicates
     
     return NextResponse.json({ 
