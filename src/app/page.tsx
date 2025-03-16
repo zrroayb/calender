@@ -39,7 +39,10 @@ export default function Home() {
     <div className="relative min-h-screen">
       <Toaster position="top-center" />
       <main className="min-h-screen p-4">
-        <Calendar onLogin={handleLogin} currentUser={currentUser} />
+        <Calendar 
+          onLogin={handleLogin} 
+          currentUser={currentUser} 
+        />
       </main>
       
       {/* Debug info */}

@@ -16,13 +16,17 @@ import AnniversaryMessage from './AnniversaryMessage';
 import BackgroundDecoration from './BackgroundDecoration';
 import HeartClickEffect from './HeartClickEffect';
 
-export default function Calendar() {
+interface CalendarProps {
+  onLogin?: (user: 'Ayberk' | 'Selvi') => void;
+  currentUser?: 'Ayberk' | 'Selvi' | null;
+}
+
+export default function Calendar({ onLogin, currentUser }: CalendarProps) {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [memories, setMemories] = useState<Memory[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<'view' | 'add'>('add');
-  const [loggedInUser, setLoggedInUser] = useState<'Ayberk' | 'Selvi' | null>(null);
 
   useEffect(() => {
     const fetchMemories = async () => {
@@ -128,13 +132,17 @@ export default function Calendar() {
   return (
     <div className="min-h-screen min-w-full bg-transparent p-0 m-0 overflow-x-hidden">
       <HeartClickEffect />
-      {!loggedInUser ? (
-        <LoginScreen onLogin={setLoggedInUser} />
+      {!currentUser ? (
+        <LoginScreen onLogin={(user) => {
+          if (onLogin) {
+            onLogin(user);
+          }
+        }} />
       ) : (
         <div className="min-h-screen w-full bg-transparent p-2 md:p-8 pb-16 md:pb-8 relative">
           <BackgroundDecoration />
           <FallingHearts />
-          <AnniversaryMessage user={loggedInUser} />
+          <AnniversaryMessage user={currentUser} />
           <div className="max-w-7xl mx-auto relative z-10">
             {/* Header Section - Made more compact on mobile */}
             <div className="mb-4 md:mb-8 text-center space-y-2 md:space-y-4">
@@ -304,12 +312,12 @@ export default function Calendar() {
               )}
               onMemoryAdded={handleMemoryAdded}
               mode={modalMode}
-              currentUser={loggedInUser}
+              currentUser={currentUser}
               setMemories={setMemories}
             />
           )}
           
-          <MobileFooter currentUser={loggedInUser} />
+          <MobileFooter currentUser={currentUser} />
         </div>
       )}
     </div>
