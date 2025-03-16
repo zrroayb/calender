@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Calendar from '@/components/Calendar';
 import LoveHeart from '@/components/LoveHeart';
-import { toast, Toaster } from 'react-hot-toast';
+import { Toaster } from 'react-hot-toast';
 
 export default function Home() {
   const [currentUser, setCurrentUser] = useState<'Ayberk' | 'Selvi' | null>(null);
@@ -47,6 +47,27 @@ export default function Home() {
         Login status: {isLoggedIn ? 'Logged in' : 'Not logged in'}, 
         User: {currentUser || 'none'}
       </div>
+      
+      {/* Debug button - only visible in development */}
+      {process.env.NODE_ENV === 'development' && (
+        <button 
+          onClick={() => {
+            console.log('Debug button clicked');
+            console.log('Current user:', currentUser);
+            console.log('Is logged in:', isLoggedIn);
+            setIsLoggedIn(true);
+            if (!currentUser) {
+              const defaultUser = 'Ayberk';
+              setCurrentUser(defaultUser);
+              localStorage.setItem('currentUser', defaultUser);
+              console.log('Set default user:', defaultUser);
+            }
+          }}
+          className="fixed top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-md text-xs z-50"
+        >
+          Debug Heart
+        </button>
+      )}
       
       {/* Show heart only when logged in */}
       {isLoggedIn && currentUser && (

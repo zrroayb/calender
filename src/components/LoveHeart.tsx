@@ -71,12 +71,19 @@ export default function LoveHeart({ currentUser }: LoveHeartProps) {
             scale: [1, 1.5, 1],
             rotate: [0, 15, -15, 0],
             transition: { duration: 1 }
-          } : {}}
+          } : {
+            scale: [1, 1.05, 1],
+            transition: { 
+              repeat: Infinity, 
+              duration: 2,
+              ease: "easeInOut" 
+            }
+          }}
           className="cursor-pointer bg-white dark:bg-gray-800 rounded-full p-3 shadow-lg"
           onClick={handleHeartClick}
         >
           <Heart 
-            size={48} 
+            size={56} 
             fill="#ff2d55" 
             color="#ff2d55" 
             strokeWidth={1.5}
