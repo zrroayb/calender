@@ -11,6 +11,7 @@ import MemoryModal from './MemoryModal';
 import Image from 'next/image';
 import FallingHearts from './FallingHearts';
 import LoginScreen from './LoginScreen';
+import MobileFooter from './MobileFooter';
 
 export default function Calendar() {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -126,7 +127,7 @@ export default function Calendar() {
       {!loggedInUser ? (
         <LoginScreen onLogin={setLoggedInUser} />
       ) : (
-        <div className="min-h-screen bg-[#fafafa] dark:bg-gray-900 p-2 md:p-8">
+        <div className="min-h-screen bg-[#fafafa] dark:bg-gray-900 p-2 md:p-8 pb-16 md:pb-8">
           <FallingHearts />
           <div className="max-w-7xl mx-auto">
             {/* Header Section - Made more compact on mobile */}
@@ -219,6 +220,7 @@ export default function Calendar() {
                               border border-gray-100 dark:border-gray-600
                               overflow-hidden
                               group
+                              min-h-[40px] md:min-h-[80px]
                             `}
                           >
                             {/* Show the first memory's image as background if exists */}
@@ -300,6 +302,8 @@ export default function Calendar() {
               setMemories={setMemories}
             />
           )}
+          
+          <MobileFooter currentUser={loggedInUser} />
         </div>
       )}
     </>
