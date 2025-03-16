@@ -14,6 +14,7 @@ import LoginScreen from './LoginScreen';
 import MobileFooter from './MobileFooter';
 import AnniversaryMessage from './AnniversaryMessage';
 import BackgroundDecoration from './BackgroundDecoration';
+import HeartClickEffect from './HeartClickEffect';
 
 export default function Calendar() {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -126,6 +127,7 @@ export default function Calendar() {
 
   return (
     <div className="min-h-screen min-w-full bg-transparent p-0 m-0 overflow-x-hidden">
+      <HeartClickEffect />
       {!loggedInUser ? (
         <LoginScreen onLogin={setLoggedInUser} />
       ) : (
@@ -198,7 +200,7 @@ export default function Calendar() {
 
               {/* Calendar Grid */}
               <div className="p-2 md:p-8 bg-white dark:bg-gray-800">
-                <div className="grid grid-cols-7 gap-1 md:gap-4">
+                <div className="grid grid-cols-7 gap-1 md:gap-4 calendar-grid">
                   {weeks.map((week, weekIndex) => (
                     <React.Fragment key={weekIndex}>
                       {week.map((day) => {
