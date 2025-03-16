@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { Heart } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { toast } from 'react-hot-toast';
-import { TELEGRAM_CONFIG, getChatId } from '@/utils/telegramConfig';
 
 interface LoveHeartProps {
   currentUser: 'Ayberk' | 'Selvi';
