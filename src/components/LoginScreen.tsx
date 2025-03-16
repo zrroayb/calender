@@ -55,11 +55,16 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
             >
               <div className="w-8 h-8 rounded-full overflow-hidden border-2 flex items-center justify-center border-purple-500 bg-purple-100">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="8" y="4" width="8" height="4" fill="#9333ea" />
-                  <rect x="4" y="8" width="4" height="4" fill="#9333ea" />
-                  <rect x="16" y="8" width="4" height="4" fill="#9333ea" />
-                  <rect x="4" y="12" width="16" height="4" fill="#9333ea" />
-                  <rect x="8" y="16" width="8" height="4" fill="#9333ea" />
+                  <rect x="6" y="2" width="12" height="4" fill="#5b21b6" />
+                  <rect x="6" y="6" width="12" height="8" fill="#f9a8d4" />
+                  <rect x="8" y="8" width="2" height="2" fill="#1e293b" />
+                  <rect x="14" y="8" width="2" height="2" fill="#1e293b" />
+                  <rect x="10" y="10" width="4" height="2" fill="#9333ea" />
+                  <rect x="8" y="14" width="8" height="6" fill="#9333ea" />
+                  <rect x="4" y="14" width="4" height="2" fill="#9333ea" />
+                  <rect x="16" y="14" width="4" height="2" fill="#9333ea" />
+                  <rect x="8" y="20" width="3" height="4" fill="#9333ea" />
+                  <rect x="13" y="20" width="3" height="4" fill="#9333ea" />
                 </svg>
               </div>
               <span>Ayberk</span>
@@ -74,12 +79,18 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
             >
               <div className="w-8 h-8 rounded-full overflow-hidden border-2 flex items-center justify-center border-pink-500 bg-pink-100">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="8" y="4" width="8" height="4" fill="#ec4899" />
-                  <rect x="4" y="8" width="4" height="4" fill="#ec4899" />
-                  <rect x="16" y="8" width="4" height="4" fill="#ec4899" />
-                  <rect x="4" y="12" width="16" height="4" fill="#ec4899" />
-                  <rect x="4" y="16" width="4" height="4" fill="#ec4899" />
-                  <rect x="16" y="16" width="4" height="4" fill="#ec4899" />
+                  <rect x="4" y="2" width="16" height="4" fill="#ec4899" />
+                  <rect x="4" y="6" width="2" height="4" fill="#ec4899" />
+                  <rect x="18" y="6" width="2" height="4" fill="#ec4899" />
+                  <rect x="6" y="6" width="12" height="8" fill="#f9a8d4" />
+                  <rect x="8" y="8" width="2" height="2" fill="#1e293b" />
+                  <rect x="14" y="8" width="2" height="2" fill="#1e293b" />
+                  <rect x="10" y="10" width="4" height="2" fill="#ec4899" />
+                  <rect x="8" y="14" width="8" height="6" fill="#ec4899" />
+                  <rect x="6" y="16" width="2" height="4" fill="#ec4899" />
+                  <rect x="16" y="16" width="2" height="4" fill="#ec4899" />
+                  <rect x="8" y="20" width="3" height="4" fill="#f9a8d4" />
+                  <rect x="13" y="20" width="3" height="4" fill="#f9a8d4" />
                 </svg>
               </div>
               <span>Selvi</span>

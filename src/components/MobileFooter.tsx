@@ -35,23 +35,48 @@ export default function MobileFooter({ currentUser }: MobileFooterProps) {
             currentUser === 'Ayberk' ? 'border-purple-500 bg-purple-100' : 'border-pink-500 bg-pink-100'
           }`}>
             {currentUser === 'Ayberk' ? (
-              // Male pixel art avatar
+              // Male pixel art avatar - more distinct
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="8" y="4" width="8" height="4" fill="#9333ea" />
-                <rect x="4" y="8" width="4" height="4" fill="#9333ea" />
-                <rect x="16" y="8" width="4" height="4" fill="#9333ea" />
-                <rect x="4" y="12" width="16" height="4" fill="#9333ea" />
-                <rect x="8" y="16" width="8" height="4" fill="#9333ea" />
+                {/* Hair */}
+                <rect x="6" y="2" width="12" height="4" fill="#5b21b6" />
+                {/* Face */}
+                <rect x="6" y="6" width="12" height="8" fill="#f9a8d4" />
+                {/* Eyes */}
+                <rect x="8" y="8" width="2" height="2" fill="#1e293b" />
+                <rect x="14" y="8" width="2" height="2" fill="#1e293b" />
+                {/* Mouth */}
+                <rect x="10" y="10" width="4" height="2" fill="#9333ea" />
+                {/* Body */}
+                <rect x="8" y="14" width="8" height="6" fill="#9333ea" />
+                {/* Arms */}
+                <rect x="4" y="14" width="4" height="2" fill="#9333ea" />
+                <rect x="16" y="14" width="4" height="2" fill="#9333ea" />
+                {/* Legs */}
+                <rect x="8" y="20" width="3" height="4" fill="#9333ea" />
+                <rect x="13" y="20" width="3" height="4" fill="#9333ea" />
               </svg>
             ) : (
-              // Female pixel art avatar
+              // Female pixel art avatar - more distinct
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="8" y="4" width="8" height="4" fill="#ec4899" />
-                <rect x="4" y="8" width="4" height="4" fill="#ec4899" />
-                <rect x="16" y="8" width="4" height="4" fill="#ec4899" />
-                <rect x="4" y="12" width="16" height="4" fill="#ec4899" />
-                <rect x="4" y="16" width="4" height="4" fill="#ec4899" />
-                <rect x="16" y="16" width="4" height="4" fill="#ec4899" />
+                {/* Hair */}
+                <rect x="4" y="2" width="16" height="4" fill="#ec4899" />
+                <rect x="4" y="6" width="2" height="4" fill="#ec4899" />
+                <rect x="18" y="6" width="2" height="4" fill="#ec4899" />
+                {/* Face */}
+                <rect x="6" y="6" width="12" height="8" fill="#f9a8d4" />
+                {/* Eyes */}
+                <rect x="8" y="8" width="2" height="2" fill="#1e293b" />
+                <rect x="14" y="8" width="2" height="2" fill="#1e293b" />
+                {/* Mouth */}
+                <rect x="10" y="10" width="4" height="2" fill="#ec4899" />
+                {/* Body */}
+                <rect x="8" y="14" width="8" height="6" fill="#ec4899" />
+                {/* Dress */}
+                <rect x="6" y="16" width="2" height="4" fill="#ec4899" />
+                <rect x="16" y="16" width="2" height="4" fill="#ec4899" />
+                {/* Legs */}
+                <rect x="8" y="20" width="3" height="4" fill="#f9a8d4" />
+                <rect x="13" y="20" width="3" height="4" fill="#f9a8d4" />
               </svg>
             )}
           </div>
