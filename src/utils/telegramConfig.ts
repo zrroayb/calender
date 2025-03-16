@@ -47,18 +47,18 @@ export function getChatId(user: 'Ayberk' | 'Selvi'): string {
 export function setTestChatIds() {
   try {
     if (typeof window !== 'undefined') {
-      // Use a known working chat ID for testing
-      const testChatId = '5037608345'; // Replace with your actual test chat ID
+      // Use the correct chat ID for both users
+      const testChatId = '6250902484';
       
       localStorage.setItem('ayberk_chat_id', testChatId);
       localStorage.setItem('selvi_chat_id', testChatId);
       
-      console.log('Set test chat IDs for both users:', testChatId);
+      console.log('Set chat IDs for both users:', testChatId);
       return true;
     }
     return false;
   } catch (error) {
-    console.error('Failed to set test chat IDs:', error);
+    console.error('Failed to set chat IDs:', error);
     return false;
   }
 }

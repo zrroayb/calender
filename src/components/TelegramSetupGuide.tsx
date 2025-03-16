@@ -290,8 +290,8 @@ export default function TelegramSetupGuide({ isOpen, onClose, currentUser }: Tel
             <div className="flex gap-2">
               <button
                 onClick={() => {
-                  // Use a hardcoded chat ID for testing
-                  setChatId('5037608345');
+                  // Use the correct chat ID
+                  setChatId('6250902484');
                   setChatIdStatus('empty');
                   setChatIdError('');
                 }}
