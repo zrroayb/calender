@@ -334,7 +334,7 @@ export default function TelegramSetupGuide({ isOpen, onClose, currentUser }: Tel
               When you add content, notifications will be sent to <strong>{otherUser}</strong>.
             </p>
             <p className="text-xs text-blue-600 dark:text-blue-400 mt-2">
-              {otherUser}'s chat ID: {otherUserChatId !== 'not set' ? '✅ Set' : '❌ Not set'}
+              {otherUser}&apos;s chat ID: {otherUserChatId !== 'not set' ? '✅ Set' : '❌ Not set'}
             </p>
           </div>
           
