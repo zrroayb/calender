@@ -3,7 +3,7 @@
 import React, { useState, useRef } from 'react';
 import { Memory } from '@/types/memory';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Camera } from 'lucide-react';
+import { X, Camera, Send } from 'lucide-react';
 import Image from 'next/image';
 import { format } from 'date-fns';
 import { toast } from 'react-hot-toast';
@@ -23,6 +23,7 @@ export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryA
   const [preview, setPreview] = useState<string>('');
   const [caption, setCaption] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [newComment, setNewComment] = useState('');
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -141,6 +142,40 @@ export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryA
     } catch (error) {
       console.error('Cloudinary test failed:', error);
       toast.error(`Cloudinary test failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  };
+
+  const handleAddComment = async (memoryId: string) => {
+    if (!newComment.trim()) return;
+
+    try {
+      const comment = {
+        id: Date.now().toString(),
+        text: newComment,
+        author: currentUser,
+        createdAt: new Date().toISOString(),
+      };
+
+      const response = await fetch(`/api/memories/${memoryId}/comments`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(comment),
+      });
+
+      if (!response.ok) throw new Error('Failed to add comment');
+
+      const updatedMemory = await response.json();
+      
+      // Update local state
+      onMemoryAdded(updatedMemory);
+      
+      setNewComment('');
+      toast.success('Comment added!');
+    } catch (error) {
+      console.error('Error adding comment:', error);
+      toast.error('Failed to add comment');
     }
   };
 
@@ -275,6 +310,56 @@ export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryA
                         <span className="text-sm text-gray-500 dark:text-gray-400">
                           {format(new Date(memory.date), 'MMMM d, yyyy')}
                         </span>
+                      </div>
+                    </div>
+
+                    {/* Comments section */}
+                    <div className="mt-6 space-y-4">
+                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Comments</h3>
+                      
+                      <div className="space-y-4">
+                        {memory.comments?.map((comment) => (
+                          <div 
+                            key={comment.id}
+                            className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4 space-y-2"
+                          >
+                            <p className="text-gray-700 dark:text-gray-300">{comment.text}</p>
+                            <div className="flex items-center gap-2 text-sm">
+                              <span className={`font-medium ${
+                                comment.author === 'Ayberk' 
+                                  ? 'text-purple-600 dark:text-purple-400' 
+                                  : 'text-pink-600 dark:text-pink-400'
+                              }`}>
+                                {comment.author}
+                              </span>
+                              <span className="text-gray-500 dark:text-gray-400">
+                                {format(new Date(comment.createdAt), 'MMM d, yyyy')}
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Add comment form */}
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          value={newComment}
+                          onChange={(e) => setNewComment(e.target.value)}
+                          placeholder="Add a comment..."
+                          className="flex-1 px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-600 
+                            bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
+                          onKeyDown={(e) => e.key === 'Enter' && handleAddComment(memory.id)}
+                        />
+                        <button
+                          onClick={() => handleAddComment(memory.id)}
+                          disabled={!newComment.trim()}
+                          className="p-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl
+                            disabled:opacity-50 disabled:cursor-not-allowed hover:from-purple-600 hover:to-pink-600 
+                            transition-colors"
+                        >
+                          <Send className="w-5 h-5" />
+                        </button>
                       </div>
                     </div>
                   </div>
