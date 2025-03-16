@@ -3,7 +3,7 @@
 import React, { useState, useRef } from 'react';
 import { Memory } from '@/types/memory';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Camera, Trash2 } from 'lucide-react';
+import { X, Camera } from 'lucide-react';
 import Image from 'next/image';
 import { format } from 'date-fns';
 import { toast } from 'react-hot-toast';
@@ -16,10 +16,9 @@ interface MemoryModalProps {
   onMemoryAdded: (memory: Memory) => void;
   mode: 'view' | 'add';
   currentUser: 'Ayberk' | 'Selvi';
-  onMemoryDeleted: (memoryId: string) => void;
 }
 
-export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryAdded, mode, currentUser, onMemoryDeleted }: MemoryModalProps) {
+export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryAdded, mode, currentUser }: MemoryModalProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string>('');
   const [caption, setCaption] = useState('');
@@ -145,26 +144,6 @@ export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryA
     }
   };
 
-  const handleDeleteMemory = async (memoryId: string) => {
-    if (!confirm('Are you sure you want to delete this memory?')) {
-      return;
-    }
-
-    try {
-      const response = await fetch(`/api/memories/${memoryId}`, {
-        method: 'DELETE',
-      });
-
-      if (!response.ok) throw new Error('Failed to delete memory');
-
-      onMemoryDeleted(memoryId);
-      toast.success('Memory deleted successfully');
-    } catch (error) {
-      console.error('Error deleting memory:', error);
-      toast.error('Failed to delete memory');
-    }
-  };
-
   if (!isOpen) return null;
 
   return (
@@ -260,39 +239,28 @@ export default function MemoryModal({ isOpen, onClose, date, memories, onMemoryA
                 console.log('Rendering memory:', memory);
                 return (
                   <div key={memory.id} className="space-y-4">
-                    <div className="relative">
-                      <motion.div 
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-700"
-                      >
-                        <Image
-                          src={memory.imageUrl}
-                          alt={memory.caption || 'Memory image'}
-                          fill
-                          sizes="(max-width: 768px) 100vw, 600px"
-                          className="object-contain"
-                          priority
-                          unoptimized
-                          onError={(e) => {
-                            console.error('Image failed to load:', {
-                              url: memory.imageUrl,
-                              error: e
-                            });
-                            e.currentTarget.src = '/placeholder.jpg';
-                          }}
-                        />
-                      </motion.div>
-                      {memory.author === currentUser && (
-                        <button
-                          onClick={() => handleDeleteMemory(memory.id)}
-                          className="absolute top-2 right-2 p-2 bg-black/50 hover:bg-black/70 rounded-full text-white transition-colors"
-                          title="Delete memory"
-                        >
-                          <Trash2 className="w-5 h-5" />
-                        </button>
-                      )}
-                    </div>
+                    <motion.div 
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-700"
+                    >
+                      <Image
+                        src={memory.imageUrl}
+                        alt={memory.caption || 'Memory image'}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 600px"
+                        className="object-contain"
+                        priority
+                        unoptimized
+                        onError={(e) => {
+                          console.error('Image failed to load:', {
+                            url: memory.imageUrl,
+                            error: e
+                          });
+                          e.currentTarget.src = '/placeholder.jpg';
+                        }}
+                      />
+                    </motion.div>
                     <div className="space-y-2">
                       <p className="text-gray-700 dark:text-gray-300 text-lg">{memory.caption}</p>
                       <div className="flex items-center gap-2">
