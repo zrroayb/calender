@@ -6,7 +6,7 @@ export const TELEGRAM_CONFIG = {
   botName: "@memoriescalenderbot",
   
   // Default chat ID - this should be a numeric ID
-  defaultChatId: "" // Empty to force users to set their own
+  defaultChatId: "6250902484" // Empty to force users to set their own
 };
 
 // Helper function to save chat IDs
