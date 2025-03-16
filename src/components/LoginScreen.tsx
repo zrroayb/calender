@@ -13,17 +13,19 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
   const [selectedUser, setSelectedUser] = useState<'Ayberk' | 'Selvi' | null>(null);
   const [password, setPassword] = useState('');
 
-  const handleLogin = () => {
-    if (!selectedUser) return;
-
-    const correctPassword = selectedUser === 'Ayberk' ? 'selvi' : 'ayberk';
+  const handleLogin = (user: 'Ayberk' | 'Selvi') => {
+    console.log('LoginScreen: User selected:', user);
     
-    if (password.toLowerCase() === correctPassword) {
-      onLogin(selectedUser);
-      toast.success(`Welcome ${selectedUser}! ❤️`);
-    } else {
-      toast.error('Incorrect password');
+    // Save to localStorage for persistence
+    try {
+      localStorage.setItem('currentUser', user);
+      console.log('LoginScreen: Saved user to localStorage:', user);
+    } catch (error) {
+      console.error('LoginScreen: Error saving user to localStorage:', error);
     }
+    
+    // Call the parent's onLogin function
+    onLogin(user);
   };
 
   return (
@@ -104,12 +106,12 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-              onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
+              onKeyDown={(e) => e.key === 'Enter' && handleLogin(selectedUser as 'Ayberk' | 'Selvi')}
             />
           </div>
 
           <button
-            onClick={handleLogin}
+            onClick={() => handleLogin(selectedUser as 'Ayberk' | 'Selvi')}
             disabled={!selectedUser || !password}
             className="w-full px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium rounded-xl
               disabled:opacity-50 disabled:cursor-not-allowed hover:from-purple-600 hover:to-pink-600 transition-colors"

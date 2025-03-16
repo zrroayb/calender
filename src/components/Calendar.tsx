@@ -44,6 +44,14 @@ export default function Calendar({ onLogin, currentUser }: CalendarProps) {
     fetchMemories();
   }, []);
 
+  useEffect(() => {
+    // If currentUser is provided from props, use it
+    if (currentUser) {
+      console.log('Using currentUser from props:', currentUser);
+      // You might need to update other state or perform other actions here
+    }
+  }, [currentUser]);
+
   const monthStart = startOfMonth(currentDate);
   const monthEnd = endOfMonth(currentDate);
   const calendarStart = startOfWeek(monthStart);
