@@ -176,6 +176,25 @@ export default function TelegramSetupGuide({ isOpen, onClose, currentUser }: Tel
   const otherUser = currentUser === 'Ayberk' ? 'Selvi' : 'Ayberk';
   const otherUserChatId = localStorage.getItem(`${otherUser.toLowerCase()}_chat_id`) || 'not set';
   
+  // Add this function to fix Selvi's chat ID specifically
+  const handleFixSelviChatId = () => {
+    try {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('selvi_chat_id', '7113830523');
+        toast.success('Fixed Selvi\'s chat ID!');
+        
+        // Update the current chat ID if the current user is Selvi
+        if (currentUser === 'Selvi') {
+          setChatId('7113830523');
+          setChatIdStatus('saved');
+        }
+      }
+    } catch (error) {
+      console.error('Failed to fix Selvi\'s chat ID:', error);
+      toast.error('Failed to fix Selvi\'s chat ID');
+    }
+  };
+  
   if (!isOpen) return null;
   
   return (
@@ -294,7 +313,7 @@ export default function TelegramSetupGuide({ isOpen, onClose, currentUser }: Tel
               <button
                 onClick={() => {
                   // Use the correct chat ID for the current user
-                  const testId = currentUser === 'Ayberk' ? '6250902484' : '11111';
+                  const testId = currentUser === 'Ayberk' ? '6250902484' : '7113830523';
                   setChatId(testId);
                   setChatIdStatus('empty');
                   setChatIdError('');
@@ -336,6 +355,18 @@ export default function TelegramSetupGuide({ isOpen, onClose, currentUser }: Tel
             </p>
             <p className="text-xs text-blue-600 dark:text-blue-400 mt-2">
               {otherUser}&apos;s chat ID: {otherUserChatId !== 'not set' ? '✅ Set' : '❌ Not set'}
+            </p>
+          </div>
+          
+          <div className="mt-2">
+            <button
+              onClick={handleFixSelviChatId}
+              className="w-full px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg text-sm"
+            >
+              Fix Selvi's Chat ID
+            </button>
+            <p className="text-xs text-green-600 dark:text-green-400 mt-1">
+              Use this if notifications to Selvi aren't working
             </p>
           </div>
           

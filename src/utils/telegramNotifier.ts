@@ -42,6 +42,20 @@ export async function sendTelegramNotification(
     
     console.log(`Sending message to ${cleanedChatId}: ${message}`);
     
+    // Log the full request details for debugging
+    const requestBody = {
+      chat_id: cleanedChatId,
+      text: message,
+      parse_mode: 'HTML',
+      disable_web_page_preview: false
+    };
+    
+    console.log('Telegram API request:', {
+      url: `https://api.telegram.org/bot${TELEGRAM_CONFIG.botToken.substring(0, 5)}***/sendMessage`,
+      method: 'POST',
+      body: requestBody
+    });
+    
     // Send message via Telegram API
     const response = await fetch(
       `https://api.telegram.org/bot${TELEGRAM_CONFIG.botToken}/sendMessage`,
@@ -50,12 +64,7 @@ export async function sendTelegramNotification(
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          chat_id: cleanedChatId,
-          text: message,
-          parse_mode: 'HTML',
-          disable_web_page_preview: false
-        }),
+        body: JSON.stringify(requestBody),
       }
     );
     
@@ -70,6 +79,7 @@ export async function sendTelegramNotification(
       // Special handling for chat not found errors
       if (data.error_code === 400 || data.description?.includes('chat not found')) {
         toast.error(`Chat ID for ${recipient} is invalid. Please update in settings.`);
+        console.error(`Invalid chat ID: ${cleanedChatId} for user ${recipient}`);
       }
       
       return false;

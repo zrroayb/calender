@@ -8,7 +8,7 @@ export const TELEGRAM_CONFIG = {
   // Default chat IDs are now handled by getDefaultChatId function
   defaultChatIds: {
     ayberk: '6250902484',
-    selvi: '11111'
+    selvi: '7113830523'
   }
 };
 
@@ -90,7 +90,7 @@ export function checkChatIds(): { ayberk: boolean, selvi: boolean } {
   }
 }
 
-// Also update the default chat IDs to be user-specific
+// Update the getDefaultChatId function to use the correct chat ID for Selvi
 export function getDefaultChatId(user: 'Ayberk' | 'Selvi'): string {
-  return user === 'Ayberk' ? '6250902484' : '11111';
+  return user === 'Ayberk' ? '6250902484' : '7113830523';
 } 
