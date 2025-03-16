@@ -34,7 +34,7 @@ export async function POST(request: Request) {
         },
         body: JSON.stringify({
           chat_id: cleanedChatId,
-          text: `🔔 Test notification from ${user}! If you're seeing this, your Telegram notifications are working correctly.\n\n@https://memories-calendar.vercel.app/`,
+          text: `🔔 Test notification from ${user}! If you're seeing this, your Telegram notifications are working correctly.\n\n<a href="https://calender-five-bay.vercel.app">Click here to view your memory calendar</a>`,
           parse_mode: 'HTML',
           disable_web_page_preview: false
         }),

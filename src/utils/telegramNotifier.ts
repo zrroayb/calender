@@ -34,11 +34,11 @@ export async function sendTelegramNotification(
       return false;
     }
     
-    // Create message with more details and a simple link
+    // Create message with more details and a clickable link
     const actionText = action === 'photo' ? 'added a new photo' : 'left a comment';
     
-    // Create HTML message with the calendar link
-    const message = `❤️ ${sender} ${actionText} on ${date}!\n\n@https://calender-five-bay.vercel.app`;
+    // Create HTML message with a clickable link
+    const message = `❤️ ${sender} ${actionText} on ${date}!\n\n<a href="https://calender-five-bay.vercel.app">Click here to view your memory calendar</a>`;
     
     console.log(`Sending message to ${cleanedChatId}: ${message}`);
     
