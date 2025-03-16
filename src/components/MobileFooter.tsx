@@ -35,16 +35,23 @@ export default function MobileFooter({ currentUser }: MobileFooterProps) {
             currentUser === 'Ayberk' ? 'border-purple-500 bg-purple-100' : 'border-pink-500 bg-pink-100'
           }`}>
             {currentUser === 'Ayberk' ? (
-              // Male avatar SVG
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" 
-                  fill="#9333ea" />
+              // Male pixel art avatar
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="8" y="4" width="8" height="4" fill="#9333ea" />
+                <rect x="4" y="8" width="4" height="4" fill="#9333ea" />
+                <rect x="16" y="8" width="4" height="4" fill="#9333ea" />
+                <rect x="4" y="12" width="16" height="4" fill="#9333ea" />
+                <rect x="8" y="16" width="8" height="4" fill="#9333ea" />
               </svg>
             ) : (
-              // Female avatar SVG
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" 
-                  fill="#ec4899" />
+              // Female pixel art avatar
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="8" y="4" width="8" height="4" fill="#ec4899" />
+                <rect x="4" y="8" width="4" height="4" fill="#ec4899" />
+                <rect x="16" y="8" width="4" height="4" fill="#ec4899" />
+                <rect x="4" y="12" width="16" height="4" fill="#ec4899" />
+                <rect x="4" y="16" width="4" height="4" fill="#ec4899" />
+                <rect x="16" y="16" width="4" height="4" fill="#ec4899" />
               </svg>
             )}
           </div>
