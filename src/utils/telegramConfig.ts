@@ -41,4 +41,43 @@ export function getChatId(user: 'Ayberk' | 'Selvi'): string {
     console.error('Failed to get chat ID:', error);
     return '';
   }
+}
+
+// Add this function to manually set chat IDs for testing
+export function setTestChatIds() {
+  try {
+    if (typeof window !== 'undefined') {
+      // Use a known working chat ID for testing
+      const testChatId = '5037608345'; // Replace with your actual test chat ID
+      
+      localStorage.setItem('ayberk_chat_id', testChatId);
+      localStorage.setItem('selvi_chat_id', testChatId);
+      
+      console.log('Set test chat IDs for both users:', testChatId);
+      return true;
+    }
+    return false;
+  } catch (error) {
+    console.error('Failed to set test chat IDs:', error);
+    return false;
+  }
+}
+
+// Add this function to check if chat IDs are properly set
+export function checkChatIds(): { ayberk: boolean, selvi: boolean } {
+  try {
+    if (typeof window !== 'undefined') {
+      const ayberkChatId = localStorage.getItem('ayberk_chat_id');
+      const selviChatId = localStorage.getItem('selvi_chat_id');
+      
+      return {
+        ayberk: !!(ayberkChatId && ayberkChatId.trim()),
+        selvi: !!(selviChatId && selviChatId.trim())
+      };
+    }
+    return { ayberk: false, selvi: false };
+  } catch (error) {
+    console.error('Failed to check chat IDs:', error);
+    return { ayberk: false, selvi: false };
+  }
 } 

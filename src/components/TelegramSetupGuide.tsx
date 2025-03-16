@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { X, MessageCircle, Copy, Check, Save } from 'lucide-react';
-import { TELEGRAM_CONFIG, saveChatId, getChatId } from '@/utils/telegramConfig';
+import { TELEGRAM_CONFIG, saveChatId, getChatId, setTestChatIds, checkChatIds } from '@/utils/telegramConfig';
 import { toast } from 'react-hot-toast';
 
 interface TelegramSetupGuideProps {
@@ -99,21 +99,78 @@ export default function TelegramSetupGuide({ isOpen, onClose, currentUser }: Tel
   const handleDebugInfo = () => {
     const ayberkChatId = localStorage.getItem('ayberk_chat_id') || 'not set';
     const selviChatId = localStorage.getItem('selvi_chat_id') || 'not set';
+    const chatIdStatus = checkChatIds();
     
     const debugInfo = {
       currentUser,
       botToken: TELEGRAM_CONFIG.botToken ? 'configured' : 'missing',
       botName: TELEGRAM_CONFIG.botName,
-      defaultChatId: TELEGRAM_CONFIG.defaultChatId,
       ayberkChatId,
       selviChatId,
-      currentChatId: chatId,
       chatIdStatus,
+      currentChatId: chatId,
       localStorage: typeof window !== 'undefined' ? 'available' : 'unavailable'
     };
     
     console.log('Telegram Debug Info:', debugInfo);
-    toast.success('Debug info logged to console');
+    
+    // Display a more user-friendly message
+    toast.success(
+      `Debug info logged to console. Chat IDs: Ayberk (${chatIdStatus.ayberk ? '✅' : '❌'}), Selvi (${chatIdStatus.selvi ? '✅' : '❌'})`
+    );
+  };
+  
+  // Add this function to help users get their chat ID
+  const handleGetChatId = async () => {
+    try {
+      setSaveSuccess(true);
+      
+      // Call the bot to get the chat ID
+      const response = await fetch('/api/get-chat-id', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          botToken: TELEGRAM_CONFIG.botToken
+        }),
+      });
+      
+      const data = await response.json();
+      
+      if (data.success && data.chatIds && data.chatIds.length > 0) {
+        // Show the available chat IDs
+        toast.success('Found chat IDs! Select one to use.');
+        
+        // Display the chat IDs in a more user-friendly way
+        console.log('Available chat IDs:', data.chatIds);
+        
+        // If there's only one, suggest using it
+        if (data.chatIds.length === 1) {
+          setChatId(data.chatIds[0].toString());
+        }
+      } else {
+        toast.error('No chat IDs found. Please start a conversation with the bot first.');
+      }
+    } catch (error) {
+      console.error('Error getting chat IDs:', error);
+      toast.error('Failed to get chat IDs. Please try again.');
+    } finally {
+      setSaveSuccess(false);
+    }
+  };
+  
+  const handleFixAll = () => {
+    if (setTestChatIds()) {
+      toast.success('Test chat IDs set for both users!');
+      
+      // Update the current chat ID in the form
+      const savedChatId = getChatId(currentUser);
+      setChatId(savedChatId);
+      setChatIdStatus('saved');
+    } else {
+      toast.error('Failed to set test chat IDs');
+    }
   };
   
   if (!isOpen) return null;
@@ -224,6 +281,46 @@ export default function TelegramSetupGuide({ isOpen, onClose, currentUser }: Tel
             >
               Test Notification
             </button>
+          </div>
+          
+          <div className="mt-4 flex flex-col gap-2">
+            <p className="text-sm text-gray-600 dark:text-gray-300">
+              Having trouble finding your Chat ID? Try these options:
+            </p>
+            <div className="flex gap-2">
+              <button
+                onClick={() => {
+                  // Use a hardcoded chat ID for testing
+                  setChatId('5037608345');
+                  setChatIdStatus('empty');
+                  setChatIdError('');
+                }}
+                className="flex-1 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm"
+              >
+                Use Test ID
+              </button>
+              <button
+                onClick={handleGetChatId}
+                className="flex-1 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg text-sm"
+              >
+                Find My Chat ID
+              </button>
+            </div>
+          </div>
+          
+          <div className="mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
+            <p className="text-sm text-yellow-700 dark:text-yellow-300 mb-2">
+              <strong>Having trouble?</strong> Use this button to fix notification issues:
+            </p>
+            <button
+              onClick={handleFixAll}
+              className="w-full px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg text-sm"
+            >
+              Fix All Notifications
+            </button>
+            <p className="text-xs text-yellow-600 dark:text-yellow-400 mt-2">
+              This will set working chat IDs for both users.
+            </p>
           </div>
           
           <div className="pt-4">
