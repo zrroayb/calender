@@ -1,5 +1,6 @@
 // Telegram notification utility
 import { TELEGRAM_CONFIG, getChatId } from './telegramConfig';
+import { toast } from 'react-hot-toast';
 
 export async function sendTelegramNotification(
   sender: 'Ayberk' | 'Selvi',
@@ -22,6 +23,15 @@ export async function sendTelegramNotification(
     if (!chatId) {
       console.error(`Telegram notification skipped: No chat ID for ${recipient}`);
       return false;
+    }
+    
+    // Check if using default chat ID
+    const storedChatId = typeof window !== 'undefined' 
+      ? localStorage.getItem(`${recipient.toLowerCase()}_chat_id`) 
+      : null;
+    
+    if (!storedChatId && chatId === TELEGRAM_CONFIG.defaultChatId) {
+      console.warn(`Using default chat ID for ${recipient}. Notifications may not be reliable.`);
     }
     
     // Create message
@@ -53,6 +63,12 @@ export async function sendTelegramNotification(
       return true;
     } else {
       console.error('Telegram API error:', data);
+      
+      // Special handling for chat not found errors
+      if (data.error_code === 400 || data.description?.includes('chat not found')) {
+        toast.error(`Chat ID for ${recipient} is invalid. Please update in settings.`);
+      }
+      
       return false;
     }
   } catch (error) {

@@ -16,6 +16,7 @@ export default function TelegramSetupGuide({ isOpen, onClose, currentUser }: Tel
   const [copied, setCopied] = useState(false);
   const [chatId, setChatId] = useState('');
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [chatIdStatus, setChatIdStatus] = useState<'empty' | 'saved' | 'default'>('empty');
   
   // Load saved chat ID on open
   useEffect(() => {
@@ -23,6 +24,16 @@ export default function TelegramSetupGuide({ isOpen, onClose, currentUser }: Tel
       const savedChatId = getChatId(currentUser);
       setChatId(savedChatId);
       setSaveSuccess(false);
+      
+      // Check if it's using the default or a saved value
+      const storedChatId = localStorage.getItem(`${currentUser.toLowerCase()}_chat_id`);
+      if (!storedChatId) {
+        setChatIdStatus('default');
+      } else if (storedChatId === savedChatId) {
+        setChatIdStatus('saved');
+      } else {
+        setChatIdStatus('empty');
+      }
     }
   }, [isOpen, currentUser]);
   
@@ -35,6 +46,7 @@ export default function TelegramSetupGuide({ isOpen, onClose, currentUser }: Tel
   const handleSaveChatId = () => {
     saveChatId(currentUser, chatId);
     setSaveSuccess(true);
+    setChatIdStatus('saved');
     setTimeout(() => setSaveSuccess(false), 3000);
   };
   
@@ -68,6 +80,26 @@ export default function TelegramSetupGuide({ isOpen, onClose, currentUser }: Tel
     } finally {
       setSaveSuccess(false);
     }
+  };
+  
+  const handleDebugInfo = () => {
+    const ayberkChatId = localStorage.getItem('ayberk_chat_id') || 'not set';
+    const selviChatId = localStorage.getItem('selvi_chat_id') || 'not set';
+    
+    const debugInfo = {
+      currentUser,
+      botToken: TELEGRAM_CONFIG.botToken ? 'configured' : 'missing',
+      botName: TELEGRAM_CONFIG.botName,
+      defaultChatId: TELEGRAM_CONFIG.defaultChatId,
+      ayberkChatId,
+      selviChatId,
+      currentChatId: chatId,
+      chatIdStatus,
+      localStorage: typeof window !== 'undefined' ? 'available' : 'unavailable'
+    };
+    
+    console.log('Telegram Debug Info:', debugInfo);
+    toast.success('Debug info logged to console');
   };
   
   if (!isOpen) return null;
@@ -117,9 +149,16 @@ export default function TelegramSetupGuide({ isOpen, onClose, currentUser }: Tel
               <input
                 type="text"
                 value={chatId}
-                onChange={(e) => setChatId(e.target.value)}
+                onChange={(e) => {
+                  setChatId(e.target.value);
+                  setChatIdStatus(e.target.value ? 'empty' : 'default');
+                }}
                 placeholder="Enter your Chat ID"
-                className="flex-1 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                className={`flex-1 px-3 py-2 rounded-lg border ${
+                  chatIdStatus === 'default' 
+                    ? 'border-yellow-300 dark:border-yellow-600 bg-yellow-50 dark:bg-yellow-900/20' 
+                    : 'border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700'
+                } text-gray-900 dark:text-white`}
               />
               <button 
                 onClick={handleSaveChatId}
@@ -131,13 +170,26 @@ export default function TelegramSetupGuide({ isOpen, onClose, currentUser }: Tel
             </div>
           </ol>
           
+          {chatIdStatus === 'default' && (
+            <p className="text-xs text-yellow-600 dark:text-yellow-400 mt-1">
+              Using default chat ID. Please enter your personal chat ID for reliable notifications.
+            </p>
+          )}
+          
           <div className="bg-purple-50 dark:bg-purple-900/20 p-3 rounded-lg mt-4">
             <p className="text-sm text-purple-700 dark:text-purple-300">
               <strong>Note:</strong> This setup ensures you&apos;ll receive notifications when your partner adds new memories or comments to your shared calendar.
             </p>
           </div>
           
-          <div className="mt-4 flex justify-end">
+          <div className="mt-4 flex justify-between">
+            <button
+              onClick={handleDebugInfo}
+              className="px-4 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-lg text-sm"
+            >
+              Debug Info
+            </button>
+            
             <button
               onClick={handleTestNotification}
               className="px-4 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-lg text-sm"
